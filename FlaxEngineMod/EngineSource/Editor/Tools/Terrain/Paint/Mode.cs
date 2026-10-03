@@ -36,7 +36,7 @@ namespace FlaxEditor.Tools.Terrain.Paint
         /// <summary>
         /// The tool strength (normalized to range 0-1). Defines the intensity of the paint operation to make it stronger or more subtle.
         /// </summary>
-        [EditorOrder(0), Limit(0, 10, 0.01f), Tooltip("The tool strength (normalized to range 0-1). Defines the intensity of the paint operation to make it stronger or more subtle.")]
+        [EditorOrder(0), Limit(0, 10, 0.01f), Tooltip("The tool strength (normalized to range 0-1). Defines the intensity of the paint operation to make it stronger or more subtle. Hold Shift to erase.")]
         public float Strength = 1.0f;
 
 
@@ -112,7 +112,11 @@ namespace FlaxEditor.Tools.Terrain.Paint
                 HeightmapSize = heightmapSize,
                 TempBuffer = tempBuffer,
                 TempBufferOther = tempBufferOther,
+                IsEraseMode = false
             };
+
+            // if shift key down, erase mode
+            if ( Input.GetKey(KeyboardKeys.Shift) ) p.IsEraseMode = true;
 
             // Get brush bounds in terrain local space
             var brushBounds = gizmo.CursorBrushBounds;
@@ -290,6 +294,9 @@ namespace FlaxEditor.Tools.Terrain.Paint
             /// The terrain local-to-world matrix.
             /// </summary>
             public Matrix TerrainWorld;
+
+
+            public bool IsEraseMode; // whether erase mode
         }
 
         /// <summary>
