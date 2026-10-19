@@ -91,9 +91,9 @@ namespace FlaxEditor.Options
         [EditorDisplay("Common"), EditorOrder(140)]
         public InputBinding Paste = new InputBinding(KeyboardKeys.V, KeyboardKeys.Control);
 
-        [DefaultValue(typeof(InputBinding), "Ctrl+D")]
+        [DefaultValue(typeof(InputBinding), "Ctrl+Alt+D")]
         [EditorDisplay("Common"), EditorOrder(150)]
-        public InputBinding Duplicate = new InputBinding(KeyboardKeys.D, KeyboardKeys.Control);
+        public InputBinding Duplicate = new InputBinding(KeyboardKeys.D, KeyboardKeys.Alt, KeyboardKeys.Control);
 
         [DefaultValue(typeof(InputBinding), "Delete")]
         [EditorDisplay("Common"), EditorOrder(160)]
@@ -602,9 +602,9 @@ namespace FlaxEditor.Options
 
         #region Interface
 
-        [DefaultValue(typeof(InputBinding), "Ctrl+W")]
+        [DefaultValue(typeof(InputBinding), "Ctrl+Alt+W")]
         [EditorDisplay("Interface"), EditorOrder(3500)]
-        public InputBinding CloseTab = new InputBinding(KeyboardKeys.W, KeyboardKeys.Control);
+        public InputBinding CloseTab = new InputBinding(KeyboardKeys.W, KeyboardKeys.Control, KeyboardKeys.Alt);
 
         [DefaultValue(typeof(InputBinding), "Ctrl+Tab")]
         [EditorDisplay("Interface"), EditorOrder(3510)]

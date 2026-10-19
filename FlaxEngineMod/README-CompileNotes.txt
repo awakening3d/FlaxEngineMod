@@ -188,3 +188,201 @@ Source/Editor/Tools/Terrain/Paint/SingleLayerMode.cs
 Source/Editor/Tools/Terrain/Paint/Mode.cs
 
 //-------------------------------------------------------------
+
+
+================================================================================
+2026.10.18 Flax Engine 源码改动总结
+================================================================================
+
+一、改动文件列表
+--------------------------------------------------------------------------------
+1. Source/Editor/Viewport/EditorViewport.cs
+2. Source/Editor/Options/InputOptions.cs
+
+
+二、Source/Editor/Viewport/EditorViewport.cs
+--------------------------------------------------------------------------------
+目的：
+  调整相机键盘移动（W/S/A/D/E/Q）的触发条件，实现：
+  - 鼠标松开时：键盘移动生效
+  - 右键按住时：键盘移动生效
+  - 左键 / 中键 / Alt+LMB 按住时：键盘移动不生效
+
+改动内容：
+
+1) 新增私有方法 GetKeyboardMoveDelta(Window win, InputOptions options)
+   统一处理 W/S/A/D/Up/Down 检测，并做：
+   - Normalize（带 LengthSquared > Mathf.Epsilon 保护）
+   - 乘以 _movementSpeed
+   - Shift 加速 x4，Ctrl 减速 x0.3
+
+   代码：
+
+   private Vector3 GetKeyboardMoveDelta(Window win, InputOptions options)
+
+2) if (_isControllingMouse) 分支（鼠标操控相机时）
+   原来：无条件检测 W/S，导致按住鼠标时键盘也移动相机。
+   现在：仅当右键（或虚拟右键）按住、且左键未按住时，才调用 GetKeyboardMoveDelta。
+
+   代码：
+
+   // Get input movement（仅右键按下时响应键盘移动）
+   var moveDelta = Vector3.Zero;
+   bool rbDownForMove = (_input.IsMouseRightDown || _isVirtualMouseRightDown)
+                        && !win.GetMouseButton(MouseButton.Left);
+   if (rbDownForMove)
+       moveDelta = GetKeyboardMoveDelta(win.Window, options.Input);
+
+3) else 分支（鼠标未控制相机时）
+   替换原来重复的 W/S 检测为调用 GetKeyboardMoveDelta，并用左键状态屏蔽。
+
+   代码：
+
+   // 原方向键/手柄检测保留
+   ...
+   if (!win.GetMouseButton(MouseButton.Left))
+       moveDelta += GetKeyboardMoveDelta(win.Window, options.Input);
+
+   说明：
+   - 使用 win.GetMouseButton(MouseButton.Left) 直接读窗口鼠标状态，
+     避免 _input 在 else 分支被 Clear() 或 useMouse=false 时状态丢失。
+   - 当前仅屏蔽左键；如需更严格，可扩展为 Left/Right/Middle 任一按下都屏蔽。
+
+
+三、Source/Editor/Options/InputOptions.cs
+--------------------------------------------------------------------------------
+目的：
+  避免 Ctrl+W 误关窗口（相机飞行时 Ctrl 减速 + W 前进会触发关闭），
+  同时避免 Ctrl+D 与常用操作冲突。
+
+改动内容：
+
+1) CloseTab（Interface 分组，EditorOrder 3500）
+   原：
+   [DefaultValue(typeof(InputBinding), "Ctrl+W")]
+   [EditorDisplay("Interface"), EditorOrder(3500)]
+   public InputBinding CloseTab = new InputBinding(KeyboardKeys.W, KeyboardKeys.Control);
+
+   改为：
+   [DefaultValue(typeof(InputBinding), "Ctrl+Alt+W")]
+   [EditorDisplay("Interface"), EditorOrder(3500)]
+   public InputBinding CloseTab = new InputBinding(KeyboardKeys.W, KeyboardKeys.Control, KeyboardKeys.Alt);
+
+2) Duplicate（Common 分组，EditorOrder 150）
+   原：
+   [DefaultValue(typeof(InputBinding), "Ctrl+D")]
+   [EditorDisplay("Common"), EditorOrder(150)]
+   public InputBinding Duplicate = new InputBinding(KeyboardKeys.D, KeyboardKeys.Control);
+
+   改为：
+   [DefaultValue(typeof(InputBinding), "Ctrl+Alt+D")]
+   [EditorDisplay("Common"), EditorOrder(150)]
+   public InputBinding Duplicate = new InputBinding(KeyboardKeys.D, KeyboardKeys.Alt, KeyboardKeys.Control);
+
+说明：
+  - 修改后，Ctrl+W 不再关闭当前标签页，需 Ctrl+Alt+W。
+  - Ctrl+D 不再触发 Duplicate，需 Ctrl+Alt+D。
+  - 如果项目里已保存过旧的输入配置（ProjectCache / Options），
+    可能需要在编辑器 Options 里手动重置或重新保存，新默认值才会生效。
+
+
+四、未改动但相关的文件（仅阅读分析）
+--------------------------------------------------------------------------------
+1. Source/Editor/Viewport/Cameras/FPSCamera.cs
+   - UpdateView 中 Dolly 段：
+     if (input.IsPanning || input.IsMoving || input.IsRotating)
+     {
+         Vector3.Transform(ref moveDelta, ref rotation, out Vector3 move);
+         position += move;
+     }
+   - 决定 moveDelta 如何被应用到相机位置。
+
+2. Source/Editor/Options/InputOptions.cs 中的其他绑定（未改）：
+   - Forward = W
+   - Backward = S
+   - Left = A
+   - Right = D
+   - Up = E
+   - Down = Q
+
+
+五、最终行为总结
+--------------------------------------------------------------------------------
+相机键盘移动（EditorViewport.cs）：
+  - 鼠标松开：W/S/A/D/E/Q 生效
+  - 右键按住：W/S/A/D/E/Q 生效
+  - 左键按住：不生效
+  - 中键按住：不生效
+  - Alt+LMB：不生效
+  - 右键+左键同时：不生效（rbDownForMove 中 !Left 条件）
+  - Shift 加速 x4，Ctrl 减速 x0.3
+
+快捷键（InputOptions.cs）：
+  - 关闭标签页：Ctrl+Alt+W（原 Ctrl+W）
+  - 复制对象：Ctrl+Alt+D（原 Ctrl+D）
+
+
+六、注意事项
+--------------------------------------------------------------------------------
+1. InputOptions 默认值修改后，若编辑器已缓存旧配置，可能需要在
+   Options -> Input 中手动恢复默认或重新保存。
+2. EditorViewport.cs 的 else 分支目前只屏蔽左键；若希望中键也屏蔽，
+   可将条件扩展为：
+   !win.GetMouseButton(MouseButton.Left) &&
+   !win.GetMouseButton(MouseButton.Middle)
+3. 若后续仍需在代码层屏蔽 Ctrl+W，可全局搜索 "CloseTab" 定位
+   DockWindow.cs / DockPanel.cs 中的实际处理点。
+
+================================================================================
+
+
+================================================================================
+2026.10.19 Flax Engine 源码改动总结
+Terrain Patch 接缝修复改动说明
+================================
+
+一、修改文件清单
+----------------
+1. Terrain.h
+2. Terrain.cpp
+3. TerrainPatch.h
+4. TerrainPatch.cpp
+
+二、核心改动
+------------
+
+1. Terrain.h
+   新增全局高度锁定相关成员:
+   - bool _global_height_range
+   - float _global_yOffset
+   - float _global_yHeight
+   - Dictionary<Int2, Array<float>> _global_heights
+   新增函数声明:
+   - RepairHeightmapEdgePixel()
+
+2. Terrain.cpp
+   - 新增 RepairHeightmapEdge():
+     遍历所有 Patch 的绝对高度快照, 对相邻 Patch 的 X/Z 接缝和四 Patch 角点取平均,
+     计算全局最小高度和最大高度, 锁定全局高度参数, 调用 ModifyHeightMap 写回,
+     调用 RepairHeightmapEdgePixel 修补法线, 最后强制 SaveHeightData 落盘.
+   - 新增 RepairHeightmapEdgePixel():
+     从 CPU 端 _dataHeightmap 读取最新像素, 对相邻 Patch 的边界像素高度(RG)和法线(BA)
+     做平均, 然后调用 OverwriteEncodedHeightmapFull 写回并上传到 GPU.
+
+3. TerrainPatch.h
+   新增声明:
+   - bool GetEncodedHeightmapPixels(Array<Color32>& outPixels)
+
+4. TerrainPatch.cpp
+   - CalculateHeightmapRange():
+     末尾增加判断, 若 _global_height_range 为 true, 则覆盖局部计算结果,
+     强制使用全局 _global_yOffset 和 _global_yHeight.
+   - 新增 GetEncodedHeightmapPixels():
+     直接从 CPU 端 _dataHeightmap 拷贝最新像素, 避免 GPU 异步回读旧数据.
+
+三、已知问题
+------------
+1. LOD > 0 时 Patch 边界法线可能仍有极细微不一致. FixMips 不处理跨 Patch 边界.
+   视觉难以察觉, 暂不处理.
+2. 手动保存有时不生效. 已通过在 RepairHeightmapEdge 末尾强制 SaveHeightData 缓解,
+   根本原因待排查.

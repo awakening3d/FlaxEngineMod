@@ -315,6 +315,15 @@ void CalculateHeightmapRange(Terrain* terrain, TerrainDataUpdateInfo& info, cons
 
     info.PatchOffset = minPatchHeight;
     info.PatchHeight = Math::Max(maxPatchHeight - minPatchHeight, 1.0f);
+
+    // ==========================================================
+    // 如果地形启用了全局高度锁定直接覆盖局部计算结果
+    // ==========================================================
+    if (terrain->_global_height_range)
+    {
+        info.PatchOffset = terrain->_global_yOffset;
+        info.PatchHeight = terrain->_global_yHeight;
+    }
 }
 
 void UpdateHeightMap(const TerrainDataUpdateInfo& info, const float* heightmap, const Int2& modifiedOffset, const Int2& modifiedSize, const byte* data)
@@ -417,12 +426,12 @@ Float3 BuildVertex(int32 x, int32 z, Terrain* terrain)
     Float3 v;
     v.X = x * TERRAIN_UNITS_PER_VERTEX;
     v.Z = z * TERRAIN_UNITS_PER_VERTEX;
-    // 关键：全局坐标采样，可以跨Patch获取高度
+    // 关键：全局坐标采样,可以跨Patch获取高度
     v.Y = terrain->SampleHeightAtGlobalCoord(x, z);
     return v;
 }
 
-// 和源码完全一致的法线计算公式，保证一致性
+// 和源码完全一致的法线计算公式,保证一致性
 Float3 ComputeUnifiedNormal(int32 centerX, int32 centerZ, Terrain* terrain)
 {
     // 采样中心顶点2×2邻域四点（跨Patch有效）
@@ -634,7 +643,6 @@ void RepairEdgeNormal(
 
 
 
-
 void UpdateNormalsAndHoles(const TerrainDataUpdateInfo& info, const float* heightmap, const byte* holesMask, const Int2& modifiedOffset, const Int2& modifiedSize, const byte* data)
 {
     PROFILE_CPU_NAMED("Terrain.CalculateNormals");
@@ -718,15 +726,6 @@ void UpdateNormalsAndHoles(const TerrainDataUpdateInfo& info, const float* heigh
         }
     }
 #endif
-
-
-
-//---------------------------------------------------------------------------------- added by afench
-//#define REPAIR_PATCH_EDGE_NORMALS 1
-//#if REPAIR_PATCH_EDGE_NORMALS
-//    RepairEdgeNormal(normalsStart, normalsEnd, normalsSize, normalsPerVertex, info);
-//#endif
-//----------------------------------------------------------------------------------
 
 
     // Write back to the data container
@@ -2118,7 +2117,30 @@ bool TerrainPatch::UpdateHeightData(TerrainDataUpdateInfo& info, const Int2& mod
 }
 
 
+// 从 CPU 端的 _dataHeightmap 同步读取最新像素
+bool TerrainPatch::GetEncodedHeightmapPixels(Array<Color32>& outPixels)
+{
+    PROFILE_CPU_NAMED("Terrain.GetEncodedHeightmapPixels");
 
+    if (!_dataHeightmap || _dataHeightmap->Mips.IsEmpty())
+    {
+        LOG(Warning, "GetEncodedHeightmapPixels: _dataHeightmap is not initialized.");
+        return true;
+    }
+
+    const int32 texWidth = _dataHeightmap->Width;
+    const int32 texHeight = _dataHeightmap->Height;
+
+    outPixels.Resize(texWidth * texHeight);
+
+    Platform::MemoryCopy(
+        outPixels.Get(),
+        _dataHeightmap->Mips[0].Data.Get(),
+        outPixels.Count() * sizeof(Color32)
+    );
+
+    return false;
+}
 
 
 bool TerrainPatch::OverwriteEncodedHeightmapFull(const Array<Color32>& tmpEncodedData)
@@ -2145,7 +2167,7 @@ bool TerrainPatch::OverwriteEncodedHeightmapFull(const Array<Color32>& tmpEncode
     const int32 pixelStride = PixelFormatExtensions::SizeInBytes(pixelFormat);
     const int32 lodCount = texture->MipLevels();
 
-    // 初始化 _dataHeightmap 存储容器（不存在则新建，和UpdateHeightData逻辑完全对齐）
+    // 初始化 _dataHeightmap 存储容器（不存在则新建,和UpdateHeightData逻辑完全对齐）
     if (_dataHeightmap == nullptr)
     {
         _dataHeightmap = New<TextureBase::InitData>();
@@ -2161,8 +2183,8 @@ bool TerrainPatch::OverwriteEncodedHeightmapFull(const Array<Color32>& tmpEncode
         mip.Data.Allocate(mip.SlicePitch);
     }
 
-    // ========== 核心：直接内存拷贝，无任何解码/编码转换 ==========
-    // tmpEncodedData = 已经打包好的Color32数组，和LOD0像素布局完全一致
+    // ========== 核心：直接内存拷贝,无任何解码/编码转换 ==========
+    // tmpEncodedData = 已经打包好的Color32数组,和LOD0像素布局完全一致
     Platform::MemoryCopy(
         _dataHeightmap->Mips[0].Data.Get(),
         tmpEncodedData.Get(),
@@ -2173,8 +2195,8 @@ bool TerrainPatch::OverwriteEncodedHeightmapFull(const Array<Color32>& tmpEncode
     if (GenerateMips(_dataHeightmap))
         return true;
 
-    // Fix Chunk边缘（引擎原生消除LOD裂缝逻辑，必须保留）
-    //FixMips(info, _dataHeightmap, pixelStride);
+    // Fix Chunk边缘（引擎原生消除LOD裂缝逻辑,必须保留）
+    FixMips(info, _dataHeightmap, pixelStride);
 
     // 异步上传全部mip到GPU纹理
     for (int32 mipIndex = 0; mipIndex < _dataHeightmap->Mips.Count(); mipIndex++)
@@ -2184,39 +2206,9 @@ bool TerrainPatch::OverwriteEncodedHeightmapFull(const Array<Color32>& tmpEncode
             task->Start();
     }
 
-    /*
-    // 重新烘焙碰撞数据（全量更新，因为整张高度图被替换）
-#if 1
-    if (_heightfield->WaitForLoaded())
-    {
-        LOG(Error, "OverwriteEncodedHeightmapFull: Failed to load heightfield asset.");
-        return true;
-    }
-    auto collisionData = &_heightfield->Data;
-    if (CookCollision(info, _dataHeightmap, _terrain->_collisionLod, collisionData))
-        return true;
-    UpdateCollision();
-#endif
-*/
-
     // 关键标记：_wasHeightModified = true
-    // 后续调用 TerrainPatch::SaveHeightData() 时，会把 _dataHeightmap 写入磁盘资产
+    // 后续调用 TerrainPatch::SaveHeightData() 时,会把 _dataHeightmap 写入磁盘资产
     _wasHeightModified = true;
-
-    /*
-    // 清除缓存，迫使下一次CacheHeightData重新读取最新数据
-    ClearHeightmapCache();
-    ClearHolesMaskCache();
-
-#if TERRAIN_USE_PHYSICS_DEBUG
-    _debugLinesDirty = true;
-#endif
-#if USE_EDITOR
-    _collisionTriangles.Resize(0);
-    _collisionTrianglesBufferDirty = true;
-#endif
-    _collisionVertices.Resize(0);
-    */
 
     return false;
 }

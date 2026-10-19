@@ -344,6 +344,8 @@ public:
     bool UpdateHeightData(struct TerrainDataUpdateInfo& info, const Int2& modifiedOffset, const Int2& modifiedSize, bool wasHeightRangeChanged, bool wasHeightChanged);
 
 
+    // 从 CPU 端的 _dataHeightmap 同步读取最新像素
+    bool GetEncodedHeightmapPixels(Array<Color32>& outPixels);
     // 全量替换Patch高度图编码数据（已编码Color32，完整Patch尺寸，无需转换）
     // tmpEncodedData: 完整Patch高度图纹理数据，尺寸 == info.TextureSize * info.TextureSize
     // 内部直接覆盖 _dataHeightmap LOD0，自动刷新mip、GPU、碰撞，标记为待保存

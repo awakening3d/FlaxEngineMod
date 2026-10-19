@@ -80,8 +80,11 @@ private:
     Float3 _cachedScale;
     Array<TerrainPatch*, InlinedAllocation<64>> _patches;
     Array<JsonAssetReference<PhysicalMaterial>, FixedAllocation<8>> _physicalMaterials;
-
-
+public:
+    bool  _global_height_range = false; // whether (_global_yOffset, _global_yHeight) is valid
+    float _global_yOffset, _global_yHeight; // global terrain height range
+    // 用于修复边缘法线的全局高度快照
+    Dictionary<Int2, Array<float>> _global_heights;
 
 public:
     /// <summary>
@@ -465,6 +468,7 @@ public:
     /// 仅编辑器预处理调用，不建议游戏运行时频繁执行
     /// </summary>
     API_FUNCTION() void RepairHeightmapEdge();
+    void RepairHeightmapEdgePixel();
 #endif
 //---------------------------------------------------------------------------------
 

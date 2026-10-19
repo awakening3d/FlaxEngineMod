@@ -4,6 +4,7 @@
 #include "TerrainPatch.h"
 #include "Engine/Core/Log.h"
 #include "Engine/Core/Math/Ray.h"
+#include "Engine/Graphics/Async/GPUTask.h"
 
 #include "Engine/Core/Collections/Dictionary.h"
 #include "Engine/Core/Math/Int2.h"
@@ -1038,12 +1039,10 @@ void Terrain::EndPlay()
 
 Color32 Get_HM_Height(int width, const Array<Color32>& hm, int x, int y) {
     return hm[y * width + x];
-    //return hm[x * width + y];
 }
 
 void Set_HM_Height(int width, Array<Color32>& hm, int x, int y, Color32 h) {
     hm[y * width + x] = h;
-    //hm[x * width + y] = h;
 }
 
 
@@ -1059,22 +1058,37 @@ FORCE_INLINE float GetNormalizedHeight(const Color32& raw)
 // 传入归一化的高度数据，设置RG为指定量化高度，保留B、A（法线数据不变）
 FORCE_INLINE void WriteHeightToRG(Color32& raw, const float normalizedHeight)
 {
-    const uint16 quantizedHeight = (uint16)(normalizedHeight * MAX_uint16);
-
+    const float h = Math::Saturate(normalizedHeight);  // clamp 到 [0,1]
+    const uint16 quantizedHeight = (uint16)(h * MAX_uint16);
     raw.R = (uint8)(quantizedHeight & 0xff);
     raw.G = (uint8)((quantizedHeight >> 8) & 0xff);
 }
 
-// 解量化 uint8 [-128~127] → float(-1 ~ 1)
+/*
 FORCE_INLINE float UnpackNormal(uint8 v)
 {
     return (static_cast<float>(v) - 128.0f) / 127.0f;
 }
+
 FORCE_INLINE uint8 PackNormal(float val)
 {
     val = Math::Clamp(val, -1.0f, 1.0f);
     return static_cast<uint8>(val * 127.0f + 128.0f);
 }
+*/
+
+// 解量化 uint8 [0~255] → float(-1 ~ 1)
+FORCE_INLINE float UnpackNormal(uint8 v)
+{
+    return ((float)v / MAX_uint8) * 2.0f - 1.0f;
+}
+
+FORCE_INLINE uint8 PackNormal(float val)
+{
+    val = Math::Clamp(val, -1.0f, 1.0f);
+    return (uint8)((val * 0.5f + 0.5f) * MAX_uint8);
+}
+
 
 /*
 // UnpackNormal: uint8(0‑255) → float(-1 ~ +1)
@@ -1140,10 +1154,23 @@ void avgColor32(const PatchInfo& pi, const Color32& colA, const Color32& colB, C
 
 
     // --- 平均高度 ---
-    const float heightAvg = (heightA + heightB) * 0.5f;
+    float hAvg = (heightA + heightB) * 0.5f;
 
-    normalizedHeightA = (heightAvg - pi.patchOffsetA) / pi.patchHeightA;
-    normalizedHeightB = (heightAvg - pi.patchOffsetB) / pi.patchHeightB;
+    // 钳到两个 Patch 都能表示的范围
+    const float lo = Math::Max(pi.patchOffsetA, pi.patchOffsetB);
+    const float hi = Math::Min(pi.patchOffsetA + pi.patchHeightA,pi.patchOffsetB + pi.patchHeightB);
+    hAvg = Math::Clamp(hAvg, lo, hi);
+
+    // 再各自归一化写回
+    normalizedHeightA = (hAvg - pi.patchOffsetA) / pi.patchHeightA;
+    normalizedHeightB = (hAvg - pi.patchOffsetB) / pi.patchHeightB;
+
+
+    if (normalizedHeightA < 0.0f || normalizedHeightA > 1.0f)
+        LOG(Warning, "Height A out of range: {0}", normalizedHeightA);
+    if (normalizedHeightB < 0.0f || normalizedHeightB > 1.0f)
+        LOG(Warning, "Height B out of range: {0}", normalizedHeightB);
+
     //传入归一化的高度数据，设置RG为指定量化高度，保留B、A（法线数据不变）
     WriteHeightToRG(colAVG_A, normalizedHeightA);
     WriteHeightToRG(colAVG_B, normalizedHeightB);
@@ -1169,7 +1196,7 @@ void avgColor32(const PatchInfo& pi, const Color32& colA, const Color32& colB, C
 
 
 
-void Terrain::RepairHeightmapEdge()
+void Terrain::RepairHeightmapEdgePixel()
 {
     PROFILE_CPU();
     if (_patches.IsEmpty())
@@ -1189,7 +1216,8 @@ void Terrain::RepairHeightmapEdge()
             LOG(Warning, "RepairHeightmapEdge: Heightmap Texture is NULL.");
             return;
         }
-        patch->Heightmap.Get()->GetPixels(patch->tmpHeightmapPixels); // 读取高度图数据到临时缓存
+        //patch->Heightmap.Get()->GetPixels(patch->tmpHeightmapPixels); // 读取高度图数据到临时缓存
+        patch->GetEncodedHeightmapPixels(patch->tmpHeightmapPixels);
 
         Int2 patchCoord;
         GetPatchCoord(i, patchCoord);
@@ -1274,7 +1302,7 @@ void Terrain::RepairHeightmapEdge()
 
     
 
-    // 【重要】刷新修改后的Patch高度图纹理
+    // 刷新修改后的Patch高度图纹理
     auto iter = dirtyPatches.Begin();
     while (iter.IsNotEnd())
     {
@@ -1295,32 +1323,191 @@ void Terrain::RepairHeightmapEdge()
             LOG(Error, "Patch Heightmap Texture Overwrite failed!");
         }
 
-
-        //持久化写入磁盘（场景保存/手动调用均可）
-        //patch->SaveHeightData();
-
-
-        /*
-        // 准备字节数据：Color32数组转为BytesContainer
-        const Span<Color32> pixelSpan = ToSpan(patch->tmpHeightmapPixels);
-        BytesContainer uploadBytes((byte*)pixelSpan.Get(), pixelSpan.Length() * sizeof(Color32));
-
-        // 获取mip0对齐后的pitch
-        const uint32 rowPitch = gpuTex->RowPitch(0);
-        const uint32 slicePitch = gpuTex->SlicePitch(0);
-
-        // 异步上传mip0，copyData=true防止内存生命周期问题
-        gpuTex->UploadMipMapAsync(uploadBytes, 0, rowPitch, slicePitch, true);
-        */
-
         ++iter;
     }
 
-    LOG(Info, "RepairHeightmapEdge finished. Modified patches: {0}", dirtyPatches.Count());
+    LOG(Info, "RepairHeightmapEdgePixel finished. Modified patches: {0}", dirtyPatches.Count());
 }
 
 
+void Terrain::RepairHeightmapEdge()
+{
+    PROFILE_CPU();
+    if (_patches.IsEmpty())
+    {
+        LOG(Warning, "RepairHeightmapEdge: No terrain patches exist.");
+        return;
+    }
 
+    const int32 hmSize = GetHeightmapSize(); // 通常为 509
+    if (hmSize <= 0) return;
+    const int32 maxIdx = hmSize - 1;
+
+    // 1. 建立坐标映射与原始高度快照
+    Dictionary<Int2, TerrainPatch*> patchGrid;
+    Dictionary<Int2, Array<float>> snapshotHeights;
+
+    for (int32 i = 0; i < _patches.Count(); i++)
+    {
+        TerrainPatch* patch = _patches[i];
+        if (!patch->Heightmap.Get())
+        {
+            LOG(Warning, "RepairHeightmapEdge: Heightmap Texture is NULL.");
+            return;
+        }
+        Int2 patchCoord;
+        GetPatchCoord(i, patchCoord);
+        patchGrid[patchCoord] = patch;
+
+        float* rawData = patch->GetHeightmapData();
+        if (!rawData) continue;
+
+        // 拷贝完整原始数据快照 (509x509)
+        Array<float>& snap = snapshotHeights[patchCoord];
+        snap.Resize(hmSize * hmSize);
+        Platform::MemoryCopy(snap.Get(), rawData, hmSize * hmSize * sizeof(float));
+    }
+
+    // 2. 准备待修改的数据缓存（基于快照拷贝，后续只修改接缝处）
+    _global_heights = snapshotHeights;
+
+    // 3. 遍历所有 Patch，处理相邻接缝（取两侧绝对高度的平均值）
+    for (const auto& kv : patchGrid)
+    {
+        const Int2 patchPos = kv.Key;
+        const Array<float>& snapA = snapshotHeights[patchPos];
+        Array<float>& newA = _global_heights[patchPos];
+
+        // --- 处理 X 轴接缝 (当前 Patch 右边界 vs 右邻居左边界) ---
+        Int2 rightPos(patchPos.X + 1, patchPos.Y);
+        if (patchGrid.ContainsKey(rightPos))
+        {
+            const Array<float>& snapB = snapshotHeights[rightPos];
+            Array<float>& newB = _global_heights[rightPos];
+
+            for (int32 y = 0; y < hmSize; y++)
+            {
+                const int32 idxA = y * hmSize + maxIdx;
+                const int32 idxB = y * hmSize + 0;
+
+                const float avg = (snapA[idxA] + snapB[idxB]) * 0.5f;
+
+                newA[idxA] = avg;
+                newB[idxB] = avg;
+            }
+        }
+
+        // --- 处理 Z 轴接缝 (当前 Patch 下边界 vs 下邻居上边界) ---
+        Int2 downPos(patchPos.X, patchPos.Y + 1);
+        if (patchGrid.ContainsKey(downPos))
+        {
+            const Array<float>& snapB = snapshotHeights[downPos];
+            Array<float>& newB = _global_heights[downPos];
+
+            for (int32 x = 0; x < hmSize; x++)
+            {
+                const int32 idxA = maxIdx * hmSize + x;
+                const int32 idxB = 0 * hmSize + x;
+
+                const float avg = (snapA[idxA] + snapB[idxB]) * 0.5f;
+
+                newA[idxA] = avg;
+                newB[idxB] = avg;
+            }
+        }
+    }
+
+    
+    // 角点处理不能省,不然会产生裂缝 
+    // 3.5 额外修复: 四个 Patch 相交的角点
+    for (const auto& kv : patchGrid)
+    {
+        const Int2 patchPos = kv.Key;
+        // 检查右侧和下方是否都有邻居
+        Int2 rightPos(patchPos.X + 1, patchPos.Y);
+        Int2 downPos(patchPos.X, patchPos.Y + 1);
+        Int2 downRightPos(patchPos.X + 1, patchPos.Y + 1);
+
+        if (patchGrid.ContainsKey(rightPos) && patchGrid.ContainsKey(downPos) && patchGrid.ContainsKey(downRightPos))
+        {
+            Array<float>& newA = _global_heights[patchPos];
+            // 当前 Patch 的右下角 (maxIdx, maxIdx)
+            const int32 idxA = maxIdx * hmSize + maxIdx;
+
+            const float hA = snapshotHeights[patchPos][idxA];
+            const float hB = snapshotHeights[rightPos][maxIdx * hmSize + 0]; // 右边 Patch 的左下角
+            const float hC = snapshotHeights[downPos][0 * hmSize + maxIdx];  // 下边 Patch 的右上角
+            const float hD = snapshotHeights[downRightPos][0 * hmSize + 0];  // 右下 Patch 的左上角
+
+            const float avgCorner = (hA + hB + hC + hD) * 0.25f;
+
+            // 强制把四个 Patch 的角点都设为 avgCorner
+            // 注意：这里为了防覆盖，必须同时修改相邻的几个 Patch，且全部基于 snapshot 重新计算
+            newA[idxA] = avgCorner;
+            // 还需要改另外三个 Patch 的角点
+            _global_heights[rightPos][maxIdx * hmSize + 0] = avgCorner;
+            _global_heights[downPos][0 * hmSize + maxIdx] = avgCorner;
+            _global_heights[downRightPos][0 * hmSize + 0] = avgCorner;
+        }
+    }
+    
+
+    // =========================================================================
+    // 4. 核心修复：计算全局高度范围（基于原始快照的全量数据），强制同步解码参数
+    // =========================================================================
+    float globalMinHeight = MAX_float;
+    float globalMaxHeight = -MAX_float;
+
+    // 遍历 snapshotHeights (原始数据)，确保包含所有内部最高/最低点
+    for (const auto& kv : snapshotHeights)
+    {
+        const Array<float>& arr = kv.Value;
+        for (int32 i = 0; i < arr.Count(); i++)
+        {
+            globalMinHeight = Math::Min(globalMinHeight, arr[i]);
+            globalMaxHeight = Math::Max(globalMaxHeight, arr[i]);
+        }
+    }
+
+    // 引擎要求高度至少为 1，防止除零或精度爆炸
+    float globalHeightRange = Math::Max(globalMaxHeight - globalMinHeight, 1.0f);
+
+    // 5. 写回数据并应用修改
+    // 赋值给 Terrain 的全局变量，并打开开关
+    _global_yOffset = globalMinHeight;
+    _global_yHeight = globalHeightRange;
+    _global_height_range = true;
+
+    // ==========================================================
+    // 强制刷新所有 Patch 的纹理和矩阵
+    // ==========================================================
+    for (const auto& kv : patchGrid)
+    {
+        TerrainPatch* patch = kv.Value;
+        Array<float>& modArr = _global_heights[kv.Key];
+
+        // 这里调用 ModifyHeightMap 会触发 CalculateHeightmapRange
+        // 由于 _global_height_range == true，引擎内部会把 _yOffset 和 _yHeight 算成全局值
+        patch->ModifyHeightMap(modArr.Get(), Int2(0, 0), Int2(hmSize, hmSize));
+
+        // 清理缓存和物理
+        patch->ClearCache();
+        patch->UpdateCollision();
+        patch->UpdateBounds();
+    }
+
+    // 修补边界法线
+    RepairHeightmapEdgePixel();
+
+    // 落盘
+    for (const auto& kv : patchGrid)
+    {
+        TerrainPatch* patch = kv.Value;
+        patch->SaveHeightData();
+    }
+
+    LOG(Info, "RepairHeightmapEdge finished. Patches processed: {0}", patchGrid.Count());
+}
 
 
 
@@ -1401,28 +1588,51 @@ float Terrain::SampleWorldHeightBilinear(float worldX, float worldZ) const
     // 1. 世界坐标转到Terrain Actor本地空间（去除Actor位置、旋转、缩放）
     Vector3 localPos = GetTransform().WorldToLocal(Vector3(worldX, 0, worldZ));
 
-    const float unitsPerVertex = TERRAIN_UNITS_PER_VERTEX;
+    const int heightmapSub1 = GetHeightmapSize() - 1;
 
-    const float hmFloatX = localPos.X / unitsPerVertex;
-    const float hmFloatZ = localPos.Z / unitsPerVertex;
+    const float hmFloatX = localPos.X / TERRAIN_UNITS_PER_VERTEX;
+    const float hmFloatZ = localPos.Z / TERRAIN_UNITS_PER_VERTEX;
 
     int32 x0 = (int32)Math::Floor(hmFloatX);
     int32 z0 = (int32)Math::Floor(hmFloatZ);
+
+    if (x0 < 0 || z0 < 0) return 0.0f;
+
+    const int32 patchX0 = x0 / heightmapSub1;
+    const int32 patchZ0 = z0 / heightmapSub1;
+    if (!GetPatch(patchX0, patchZ0)) return 0.0f;   // 只查一次
+
+
     int32 x1 = x0 + 1;
     int32 z1 = z0 + 1;
+
+    const int32 patchX1 = x1 / heightmapSub1;
+    const int32 patchZ1 = z1 / heightmapSub1;
 
     // 插值权重 [0~1]
     const float fx = hmFloatX - x0;
     const float fz = hmFloatZ - z0;
 
     const float h00 = SampleHeightAtGlobalCoord(x0, z0);
-    const float h10 = SampleHeightAtGlobalCoord(x1, z0);
-    const float h01 = SampleHeightAtGlobalCoord(x0, z1);
-    const float h11 = SampleHeightAtGlobalCoord(x1, z1);
 
-    Int2 p00(x0 / (GetHeightmapSize() - 1), z0 / (GetHeightmapSize() - 1));
-    if (!HasPatch(p00))
-        return 0.0f;
+    // 只有跨 patch 时才查 HasPatch，否则直接采样
+    float h10, h01, h11;
+
+    if (patchX1 == patchX0)
+        h10 = SampleHeightAtGlobalCoord(x1, z0);
+    else
+        h10 = GetPatch(patchX1, patchZ0) ? SampleHeightAtGlobalCoord(x1, z0) : h00;
+
+    if (patchZ1 == patchZ0)
+        h01 = SampleHeightAtGlobalCoord(x0, z1);
+    else
+        h01 = GetPatch(patchX0, patchZ1) ? SampleHeightAtGlobalCoord(x0, z1) : h00;
+
+    if (patchX1 == patchX0 && patchZ1 == patchZ0)
+        h11 = SampleHeightAtGlobalCoord(x1, z1);
+    else
+        h11 = GetPatch(patchX1, patchZ1) ? SampleHeightAtGlobalCoord(x1, z1) : h00;
+
 
     const float h0 = Math::Lerp(h00, h10, fx);
     const float h1 = Math::Lerp(h01, h11, fx);
@@ -1476,7 +1686,6 @@ bool Terrain::SampleNormalRawAtGlobalCoord(int32 x, int32 z, float& outNx, float
     }
 
     int32 idx = localZ * patchHmSize + localX;
-    //int32 idx = localX * patchHmSize + localZ;
     const Color32& pixel = pixels[idx];
 
     outNx = UnpackNormal(pixel.B);
