@@ -123,7 +123,11 @@ namespace FlaxEditor.Tools.Terrain.Paint
                 case PixelFormat.R8_UNorm:
                 case PixelFormat.R16_UNorm:
                 case PixelFormat.R8G8B8A8_UNorm:
+                case PixelFormat.B8G8R8A8_UNorm:
+                case PixelFormat.B8G8R8X8_UNorm:
                 case PixelFormat.R8G8B8A8_UNorm_sRGB:
+                case PixelFormat.B8G8R8A8_UNorm_sRGB:
+                case PixelFormat.B8G8R8X8_UNorm_sRGB:
                     return true;
                 default:
                     return false;
@@ -176,7 +180,11 @@ namespace FlaxEditor.Tools.Terrain.Paint
                         return (byte)(v16 >> 8);   // 16 位降到 8 位
                     }
                 case PixelFormat.R8G8B8A8_UNorm:
+                case PixelFormat.B8G8R8A8_UNorm:
+                case PixelFormat.B8G8R8X8_UNorm:
                 case PixelFormat.R8G8B8A8_UNorm_sRGB:
+                case PixelFormat.B8G8R8A8_UNorm_sRGB:
+                case PixelFormat.B8G8R8X8_UNorm_sRGB:
                     return pixels[idx * 4];        // 取 R
                 default:
                     return 0;

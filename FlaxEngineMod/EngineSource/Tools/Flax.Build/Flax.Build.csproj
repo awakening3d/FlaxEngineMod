@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>annotations</Nullable>
+    <IsPackable>false</IsPackable>
+    <Configurations>Debug;Release</Configurations>
+    <BaseOutputPath>..\..\..\Binaries\Tools</BaseOutputPath>
+    <OutDir>..\..\..\Binaries\Tools</OutDir>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DefineConstants>USE_NETCORE</DefineConstants>
+    <DebugType>portable</DebugType>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <ErrorReport>none</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1701;1702;8981</NoWarn>
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Compile Include="**\*.cs" />
+    <Compile Remove="obj\**" />
+    <Compile Include="..\..\Platforms\XboxOne\Flax.Build\*.cs" />
+    <Compile Include="..\..\Platforms\XboxScarlett\Flax.Build\*.cs" />
+    <Compile Include="..\..\Platforms\Switch\Flax.Build\*.cs" />
+    <Compile Include="..\..\Platforms\PS4\Flax.Build\*.cs" />
+    <Compile Include="..\..\Platforms\PS5\Flax.Build\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>..\..\Platforms\DotNet\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages">
+      <HintPath>..\..\Platforms\DotNet\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\..\Platforms\DotNet\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop">
+      <HintPath>..\..\Platforms\DotNet\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp">
+      <HintPath>..\..\Platforms\DotNet\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis">
+      <HintPath>..\..\Platforms\DotNet\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

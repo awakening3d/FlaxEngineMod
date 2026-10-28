@@ -1,0 +1,1644 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Configurations>Editor.Windows.Debug;Editor.Windows.Development;Editor.Windows.Release;Game.Windows.Debug;Game.Windows.Development;Game.Windows.Release;Tests.Windows.Development</Configurations>
+    <Platforms>x64</Platforms>
+    <Configuration>Editor.Windows.Debug</Configuration>
+    <Platform>x64</Platform>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <RootNamespace>FlaxEngine</RootNamespace>
+    <AssemblyName>FlaxEngine.CSharp</AssemblyName>
+    <LangVersion>13.0</LangVersion>
+    <FileAlignment>512</FileAlignment>
+    <CustomAfterMicrosoftCommonTargets>$(MSBuildThisFileDirectory)..\Cache\Projects\Flax.Build.CSharp.SkipBuild.targets</CustomAfterMicrosoftCommonTargets>
+    <RestorePackages>false</RestorePackages>
+    <DisableFastUpToDateCheck>True</DisableFastUpToDateCheck>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Editor.Windows.Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Binaries\Editor\Win64\Debug\</OutputPath>
+    <BaseIntermediateOutputPath>..\Cache/Intermediate\FlaxEditor\Windows\x64\Debug\CSharp\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>..\Cache/Intermediate\FlaxEditor\Windows\x64\Debug\CSharp\</IntermediateOutputPath>
+    <DefineConstants>BUILD_DEBUG;PLATFORM_WINDOWS;FLAX_EDITOR;FLAX;FLAX_ASSERTIONS;DOTNET_HOST_CORECLR;USE_NETCORE;NET;NET9_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP;NETCOREAPP3_1_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP1_0_OR_GREATER;USE_PROFILER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\Binaries\Editor\Win64\Debug\FlaxEngine.CSharp.xml</DocumentationFile>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <FlaxConfiguration>Debug</FlaxConfiguration>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Editor.Windows.Development|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Binaries\Editor\Win64\Development\</OutputPath>
+    <BaseIntermediateOutputPath>..\Cache/Intermediate\FlaxEditor\Windows\x64\Development\CSharp\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>..\Cache/Intermediate\FlaxEditor\Windows\x64\Development\CSharp\</IntermediateOutputPath>
+    <DefineConstants>BUILD_DEVELOPMENT;PLATFORM_WINDOWS;FLAX_EDITOR;FLAX;FLAX_ASSERTIONS;DOTNET_HOST_CORECLR;USE_NETCORE;NET;NET9_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP;NETCOREAPP3_1_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP1_0_OR_GREATER;USE_PROFILER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\Binaries\Editor\Win64\Development\FlaxEngine.CSharp.xml</DocumentationFile>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <FlaxConfiguration>Development</FlaxConfiguration>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Editor.Windows.Release|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Binaries\Editor\Win64\Release\</OutputPath>
+    <BaseIntermediateOutputPath>..\Cache/Intermediate\FlaxEditor\Windows\x64\Release\CSharp\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>..\Cache/Intermediate\FlaxEditor\Windows\x64\Release\CSharp\</IntermediateOutputPath>
+    <DefineConstants>BUILD_RELEASE;PLATFORM_WINDOWS;FLAX_EDITOR;FLAX;FLAX_ASSERTIONS;DOTNET_HOST_CORECLR;USE_NETCORE;NET;NET9_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP;NETCOREAPP3_1_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP1_0_OR_GREATER;USE_PROFILER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\Binaries\Editor\Win64\Release\FlaxEngine.CSharp.xml</DocumentationFile>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <FlaxConfiguration>Release</FlaxConfiguration>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Game.Windows.Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Platforms\Windows\Binaries\Game\x64\Debug\</OutputPath>
+    <BaseIntermediateOutputPath>..\Cache/Intermediate\FlaxGame\Windows\x64\Debug\CSharp\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>..\Cache/Intermediate\FlaxGame\Windows\x64\Debug\CSharp\</IntermediateOutputPath>
+    <DefineConstants>BUILD_DEBUG;PLATFORM_WINDOWS;FLAX_GAME;FLAX;FLAX_ASSERTIONS;DOTNET_HOST_CORECLR;USE_NETCORE;NET;NET9_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP;NETCOREAPP3_1_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP1_0_OR_GREATER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>Platforms\Windows\Binaries\Game\x64\Debug\FlaxEngine.CSharp.xml</DocumentationFile>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <FlaxConfiguration>Debug</FlaxConfiguration>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Game.Windows.Development|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Platforms\Windows\Binaries\Game\x64\Development\</OutputPath>
+    <BaseIntermediateOutputPath>..\Cache/Intermediate\FlaxGame\Windows\x64\Development\CSharp\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>..\Cache/Intermediate\FlaxGame\Windows\x64\Development\CSharp\</IntermediateOutputPath>
+    <DefineConstants>BUILD_DEVELOPMENT;PLATFORM_WINDOWS;FLAX_GAME;FLAX;FLAX_ASSERTIONS;DOTNET_HOST_CORECLR;USE_NETCORE;NET;NET9_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP;NETCOREAPP3_1_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP1_0_OR_GREATER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>Platforms\Windows\Binaries\Game\x64\Development\FlaxEngine.CSharp.xml</DocumentationFile>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <FlaxConfiguration>Development</FlaxConfiguration>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Game.Windows.Release|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Platforms\Windows\Binaries\Game\x64\Release\</OutputPath>
+    <BaseIntermediateOutputPath>..\Cache/Intermediate\FlaxGame\Windows\x64\Release\CSharp\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>..\Cache/Intermediate\FlaxGame\Windows\x64\Release\CSharp\</IntermediateOutputPath>
+    <DefineConstants>BUILD_RELEASE;PLATFORM_WINDOWS;FLAX_GAME;FLAX;FLAX_ASSERTIONS;DOTNET_HOST_CORECLR;USE_NETCORE;NET;NET9_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP;NETCOREAPP3_1_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP1_0_OR_GREATER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>Platforms\Windows\Binaries\Game\x64\Release\FlaxEngine.CSharp.xml</DocumentationFile>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <FlaxConfiguration>Release</FlaxConfiguration>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Tests.Windows.Development|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Binaries\Editor\Win64\Development\</OutputPath>
+    <BaseIntermediateOutputPath>..\Cache/Intermediate\FlaxTestsTarget\Windows\x64\Development\CSharp\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>..\Cache/Intermediate\FlaxTestsTarget\Windows\x64\Development\CSharp\</IntermediateOutputPath>
+    <DefineConstants>FLAX_TESTS;BUILD_DEVELOPMENT;PLATFORM_WINDOWS;FLAX_EDITOR;FLAX;FLAX_ASSERTIONS;DOTNET_HOST_CORECLR;USE_NETCORE;NET;NET9_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP;NETCOREAPP3_1_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP1_0_OR_GREATER;USE_PROFILER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>..\Binaries\Editor\Win64\Development\FlaxEngine.CSharp.xml</DocumentationFile>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <FlaxConfiguration>Development</FlaxConfiguration>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Tests.Windows.Development|x64' ">
+    <Reference Include="nunit.framework">
+      <HintPath>..\Source\Platforms\DotNet\NUnit\framework\nunit.framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Platforms\DotNet\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Editor\Content\AssetItemConverter.cs" />
+    <Compile Include="Editor\Content\AssetPickerValidator.cs" />
+    <Compile Include="Editor\Content\Create\CreateFileEntry.cs" />
+    <Compile Include="Editor\Content\Create\CreateFilesDialog.cs" />
+    <Compile Include="Editor\Content\Create\ParticleEmitterCreateEntry.cs" />
+    <Compile Include="Editor\Content\Create\PrefabCreateEntry.cs" />
+    <Compile Include="Editor\Content\Create\SettingsCreateEntry.cs" />
+    <Compile Include="Editor\Content\Create\VisualScriptCreateEntry.cs" />
+    <Compile Include="Editor\Content\GUI\ContentNavigation.cs" />
+    <Compile Include="Editor\Content\GUI\ContentView.cs" />
+    <Compile Include="Editor\Content\IFileEntryAction.cs" />
+    <Compile Include="Editor\Content\Import\AssetImportEntry.cs" />
+    <Compile Include="Editor\Content\Import\AudioImportSettings.cs" />
+    <Compile Include="Editor\Content\Import\FolderImportEntry.cs" />
+    <Compile Include="Editor\Content\Import\ImportFileEntry.cs" />
+    <Compile Include="Editor\Content\Import\ImportFilesDialog.cs" />
+    <Compile Include="Editor\Content\Import\ModelImportEntry.cs" />
+    <Compile Include="Editor\Content\Import\Request.cs" />
+    <Compile Include="Editor\Content\Import\TextureImportEntry.cs" />
+    <Compile Include="Editor\Content\Items\AssetItem.cs" />
+    <Compile Include="Editor\Content\Items\BinaryAssetItem.cs" />
+    <Compile Include="Editor\Content\Items\ContentFolder.cs" />
+    <Compile Include="Editor\Content\Items\ContentItem.cs" />
+    <Compile Include="Editor\Content\Items\CppScriptItem.cs" />
+    <Compile Include="Editor\Content\Items\CSharpScriptItem.cs" />
+    <Compile Include="Editor\Content\Items\FileItem.cs" />
+    <Compile Include="Editor\Content\Items\JsonAssetItem.cs" />
+    <Compile Include="Editor\Content\Items\NewItem.cs" />
+    <Compile Include="Editor\Content\Items\PrefabItem.cs" />
+    <Compile Include="Editor\Content\Items\SceneItem.cs" />
+    <Compile Include="Editor\Content\Items\ScriptItem.cs" />
+    <Compile Include="Editor\Content\Items\ShaderSourceItem.cs" />
+    <Compile Include="Editor\Content\Items\VideoItem.cs" />
+    <Compile Include="Editor\Content\Items\VisualScriptItem.cs" />
+    <Compile Include="Editor\Content\PreviewsCache.cs" />
+    <Compile Include="Editor\Content\Proxy\AnimationGraphFunctionProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\AnimationGraphProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\AnimationProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\AssetProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\AudioClipProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\BehaviorTreeProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\BinaryAssetProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\CollisionDataProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\ContentProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\CppProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\CSharpProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\CubeTextureProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\FileProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\FontProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\GameplayGlobalsProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\IESProfileProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\JsonAssetProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\LocalizedStringTableProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\MaterialBaseProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\MaterialFunctionProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\MaterialInstanceProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\MaterialProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\ModelProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\ParticleEmitterFunctionProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\ParticleEmitterProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\ParticleSystemProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\PrefabProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\PreviewsCacheProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\SceneAnimationProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\SceneProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\ScriptProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\SettingsProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\ShaderProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\ShaderSourceProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\SkeletonMaskProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\SkinnedModelProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\SpriteAtlasProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\TextureProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\VideoProxy.cs" />
+    <Compile Include="Editor\Content\Proxy\VisualScriptProxy.cs" />
+    <Compile Include="Editor\Content\Settings\BuildPreset.cs" />
+    <Compile Include="Editor\Content\Settings\BuildTarget.cs" />
+    <Compile Include="Editor\Content\Thumbnails\ThumbnailRequest.cs" />
+    <Compile Include="Editor\Content\Thumbnails\ThumbnailsModule.cs" />
+    <Compile Include="Editor\Content\Tree\ContentFolderTreeNode.cs" />
+    <Compile Include="Editor\Content\Tree\ContentItemTreeNode.cs" />
+    <Compile Include="Editor\Content\Tree\MainContentTreeNode.cs" />
+    <Compile Include="Editor\Content\Tree\ProjectTreeNode.cs" />
+    <Compile Include="Editor\Content\Tree\RootContentTreeNode.cs" />
+    <Compile Include="Editor\Content\Tree\TreeViewPanel.cs" />
+    <Compile Include="Editor\Cooker\GameCooker.cs" />
+    <Compile Include="Editor\CustomEditors\CustomEditor.cs" />
+    <Compile Include="Editor\CustomEditors\CustomEditorPresenter.cs" />
+    <Compile Include="Editor\CustomEditors\CustomEditorsUtil.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\ActorEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\AnimatedModelEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\AudioSourceEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\ClothEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\CurveObjectEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\EnvironmentProbeEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\FontReferenceEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\GPUTextureEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\LayersMaskEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\LayersMatrixEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\LocalizationSettingsEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\MeshReferenceEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\MissingScriptEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\ModelPrefabEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\NavAgentMaskEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\NavMeshBoundsVolumeEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\ParticleEffectEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\PhysicalMaterialEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\PostProcessSettingsEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\RagdollEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\RigidBodyEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\SceneAnimationPlayerEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\ScriptingObjectEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\ScriptsEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\SkyLightEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\SplineEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\TerrainEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\TextureGroupEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Dedicated\UIControlEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\ActorLayerEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\ActorStaticFlagsEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\ActorTransformEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\ArrayEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\AssetRefEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\BehaviorKnowledgeSelectorEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\BindableButtonEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\BooleanEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\CollectionEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\ColorEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\ColorTrackball.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\ControlReferenceEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\CultureInfoEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\DictionaryEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\DoubleEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\DummyEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\EnumEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\FlaxObjectRefEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\FloatEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\GamepadButtonEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\GenericEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\GuidEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\IBrushEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\InputEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\IntegerEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\KeyboardKeysEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\ListEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\LocalizedStringEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\MarginEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\MatrixEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\ModelInstanceEntryEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\MouseButtonEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\ObjectSwitcherEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\QuaternionEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\SkeletonNodeEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\SpriteHandleEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\StringEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\StyleEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\TagEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\TerrainLayerEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\TypeEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\Vector2Editor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\Vector3Editor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\Vector4Editor.cs" />
+    <Compile Include="Editor\CustomEditors\Editors\VersionEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\ButtonElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\CheckBoxElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\ComboBoxElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\Container\CustomElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\Container\GroupElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\Container\HorizontalPanelElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\Container\PropertiesListElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\Container\SpaceElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\Container\TreeElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\Container\TreeNodeElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\Container\VerticalPanelElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\DoubleValueElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\EnumElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\FloatValueElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\IFloatValueEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\IIntegerValueEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\ImageElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\IntegerValueElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\LabelElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\SliderElement.cs" />
+    <Compile Include="Editor\CustomEditors\Elements\TextBoxElement.cs" />
+    <Compile Include="Editor\CustomEditors\GUI\CheckablePropertyNameLabel.cs" />
+    <Compile Include="Editor\CustomEditors\GUI\ClickablePropertyNameLabel.cs" />
+    <Compile Include="Editor\CustomEditors\GUI\DraggablePropertyNameLabel.cs" />
+    <Compile Include="Editor\CustomEditors\GUI\PropertiesList.cs" />
+    <Compile Include="Editor\CustomEditors\GUI\PropertyNameLabel.cs" />
+    <Compile Include="Editor\CustomEditors\LayoutElement.cs" />
+    <Compile Include="Editor\CustomEditors\LayoutElementsContainer.cs" />
+    <Compile Include="Editor\CustomEditors\SyncPointEditor.cs" />
+    <Compile Include="Editor\CustomEditors\Values\CustomValueContainer.cs" />
+    <Compile Include="Editor\CustomEditors\Values\DictionaryValueContainer.cs" />
+    <Compile Include="Editor\CustomEditors\Values\ListValueContainer.cs" />
+    <Compile Include="Editor\CustomEditors\Values\ReadOnlyValueContainer.cs" />
+    <Compile Include="Editor\CustomEditors\Values\ValueContainer.cs" />
+    <Compile Include="Editor\CustomEditorWindow.cs" />
+    <Compile Include="Editor\Editor.cs" />
+    <Compile Include="Editor\EditorAssets.cs" />
+    <Compile Include="Editor\EditorIcons.cs" />
+    <Compile Include="Editor\Gizmo\DirectionGizmo.cs" />
+    <Compile Include="Editor\Gizmo\EditorPrimitives.cs" />
+    <Compile Include="Editor\Gizmo\GizmoBase.cs" />
+    <Compile Include="Editor\Gizmo\GizmosCollection.cs" />
+    <Compile Include="Editor\Gizmo\GridGizmo.cs" />
+    <Compile Include="Editor\Gizmo\IGizmoOwner.cs" />
+    <Compile Include="Editor\Gizmo\SelectionOutline.cs" />
+    <Compile Include="Editor\Gizmo\TransformGizmo.cs" />
+    <Compile Include="Editor\Gizmo\TransformGizmoBase.cs" />
+    <Compile Include="Editor\Gizmo\TransformGizmoBase.Draw.cs" />
+    <Compile Include="Editor\Gizmo\TransformGizmoBase.Selection.cs" />
+    <Compile Include="Editor\Gizmo\TransformGizmoBase.Settings.cs" />
+    <Compile Include="Editor\Gizmo\TransformGizmoBase.Types.cs" />
+    <Compile Include="Editor\Gizmo\UIEditorGizmo.cs" />
+    <Compile Include="Editor\Gizmo\ViewportRubberBandSelector.cs" />
+    <Compile Include="Editor\GUI\AssetPicker.cs" />
+    <Compile Include="Editor\GUI\ClickableLabel.cs" />
+    <Compile Include="Editor\GUI\ColumnDefinition.cs" />
+    <Compile Include="Editor\GUI\ComboBox.cs" />
+    <Compile Include="Editor\GUI\ContextMenu\ContextMenu.cs" />
+    <Compile Include="Editor\GUI\ContextMenu\ContextMenuBase.cs" />
+    <Compile Include="Editor\GUI\ContextMenu\ContextMenuButton.cs" />
+    <Compile Include="Editor\GUI\ContextMenu\ContextMenuChildMenu.cs" />
+    <Compile Include="Editor\GUI\ContextMenu\ContextMenuItem.cs" />
+    <Compile Include="Editor\GUI\ContextMenu\ContextMenuSeparator.cs" />
+    <Compile Include="Editor\GUI\ContextMenu\ContextMenuSingleSelectGroup.cs" />
+    <Compile Include="Editor\GUI\CurveEditor.Access.cs" />
+    <Compile Include="Editor\GUI\CurveEditor.Base.cs" />
+    <Compile Include="Editor\GUI\CurveEditor.Contents.cs" />
+    <Compile Include="Editor\GUI\CurveEditor.cs" />
+    <Compile Include="Editor\GUI\Dialogs\ColorPickerDialog.cs" />
+    <Compile Include="Editor\GUI\Dialogs\ColorSelector.cs" />
+    <Compile Include="Editor\GUI\Dialogs\Dialog.cs" />
+    <Compile Include="Editor\GUI\Docking\DockPanel.cs" />
+    <Compile Include="Editor\GUI\Docking\DockPanelProxy.cs" />
+    <Compile Include="Editor\GUI\Docking\DockWindow.cs" />
+    <Compile Include="Editor\GUI\Docking\FloatWindowDockPanel.cs" />
+    <Compile Include="Editor\GUI\Docking\MasterDockPanel.cs" />
+    <Compile Include="Editor\GUI\Docking\WindowDragHelper.cs" />
+    <Compile Include="Editor\GUI\Drag\DragActors.cs" />
+    <Compile Include="Editor\GUI\Drag\DragActorType.cs" />
+    <Compile Include="Editor\GUI\Drag\DragAssets.cs" />
+    <Compile Include="Editor\GUI\Drag\DragControlType.cs" />
+    <Compile Include="Editor\GUI\Drag\DragEventArgs.cs" />
+    <Compile Include="Editor\GUI\Drag\DragHandlers.cs" />
+    <Compile Include="Editor\GUI\Drag\DragHelper.cs" />
+    <Compile Include="Editor\GUI\Drag\DragItems.cs" />
+    <Compile Include="Editor\GUI\Drag\DragNames.cs" />
+    <Compile Include="Editor\GUI\Drag\DragScriptItems.cs" />
+    <Compile Include="Editor\GUI\Drag\DragScripts.cs" />
+    <Compile Include="Editor\GUI\EnumComboBox.cs" />
+    <Compile Include="Editor\GUI\IKeyframesEditor.cs" />
+    <Compile Include="Editor\GUI\IKeyframesEditorContext.cs" />
+    <Compile Include="Editor\GUI\Input\ColorValueBox.cs" />
+    <Compile Include="Editor\GUI\Input\DoubleValueBox.cs" />
+    <Compile Include="Editor\GUI\Input\FloatValueBox.cs" />
+    <Compile Include="Editor\GUI\Input\IntValueBox.cs" />
+    <Compile Include="Editor\GUI\Input\LongValueBox.cs" />
+    <Compile Include="Editor\GUI\Input\SearchBox.cs" />
+    <Compile Include="Editor\GUI\Input\SliderControl.cs" />
+    <Compile Include="Editor\GUI\Input\UIntValueBox.cs" />
+    <Compile Include="Editor\GUI\Input\ULongValueBox.cs" />
+    <Compile Include="Editor\GUI\Input\ValueBox.cs" />
+    <Compile Include="Editor\GUI\ItemsListContextMenu.cs" />
+    <Compile Include="Editor\GUI\KeyframesEditorUtils.cs" />
+    <Compile Include="Editor\GUI\MainMenu.cs" />
+    <Compile Include="Editor\GUI\MainMenuButton.cs" />
+    <Compile Include="Editor\GUI\NavigationBar.cs" />
+    <Compile Include="Editor\GUI\NavigationButton.cs" />
+    <Compile Include="Editor\GUI\PlatformSelector.cs" />
+    <Compile Include="Editor\GUI\Popups\ActorSearchPopup.cs" />
+    <Compile Include="Editor\GUI\Popups\AssetSearchPopup.cs" />
+    <Compile Include="Editor\GUI\Popups\RenamePopup.cs" />
+    <Compile Include="Editor\GUI\Popups\ScriptSearchPopup.cs" />
+    <Compile Include="Editor\GUI\Popups\TypeSearchPopup.cs" />
+    <Compile Include="Editor\GUI\PrefabDiffContextMenu.cs" />
+    <Compile Include="Editor\GUI\Row.cs" />
+    <Compile Include="Editor\GUI\Splitter.cs" />
+    <Compile Include="Editor\GUI\StatusBar.cs" />
+    <Compile Include="Editor\GUI\StyleValueEditor.cs" />
+    <Compile Include="Editor\GUI\Table.cs" />
+    <Compile Include="Editor\GUI\Tabs\Tab.cs" />
+    <Compile Include="Editor\GUI\Tabs\Tabs.cs" />
+    <Compile Include="Editor\GUI\Timeline\AnimationTimeline.cs" />
+    <Compile Include="Editor\GUI\Timeline\EditCurveTrackGizmo.cs" />
+    <Compile Include="Editor\GUI\Timeline\GUI\Background.cs" />
+    <Compile Include="Editor\GUI\Timeline\GUI\BackgroundArea.cs" />
+    <Compile Include="Editor\GUI\Timeline\GUI\GradientEditor.cs" />
+    <Compile Include="Editor\GUI\Timeline\GUI\KeyframesEditor.cs" />
+    <Compile Include="Editor\GUI\Timeline\GUI\PositionHandle.cs" />
+    <Compile Include="Editor\GUI\Timeline\GUI\TimelineEdge.cs" />
+    <Compile Include="Editor\GUI\Timeline\Media.cs" />
+    <Compile Include="Editor\GUI\Timeline\ParticleSystemTimeline.cs" />
+    <Compile Include="Editor\GUI\Timeline\SceneAnimationTimeline.cs" />
+    <Compile Include="Editor\GUI\Timeline\Timeline.cs" />
+    <Compile Include="Editor\GUI\Timeline\Timeline.Data.cs" />
+    <Compile Include="Editor\GUI\Timeline\Timeline.UI.cs" />
+    <Compile Include="Editor\GUI\Timeline\Track.cs" />
+    <Compile Include="Editor\GUI\Timeline\TrackArchetype.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\ActorTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\AnimationChannelTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\AnimationEventTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\AudioTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\CameraCutTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\ConductorTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\CurvePropertyTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\EventTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\FolderTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\KeyframesPropertyTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\MemberTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\NestedAnimationTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\NestedSceneAnimationTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\ObjectPropertyTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\ObjectReferencePropertyTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\ObjectTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\ParticleEmitterTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\PostProcessMaterialTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\ScreenFadeTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\ScriptTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\SingleMediaAssetTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\SingleMediaTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\StringPropertyTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Tracks\StructPropertyTrack.cs" />
+    <Compile Include="Editor\GUI\Timeline\Undo\AddRemoveTrackAction.cs" />
+    <Compile Include="Editor\GUI\Timeline\Undo\EditFpsAction.cs" />
+    <Compile Include="Editor\GUI\Timeline\Undo\EditTimelineAction.cs" />
+    <Compile Include="Editor\GUI\Timeline\Undo\EditTrackAction.cs" />
+    <Compile Include="Editor\GUI\Timeline\Undo\RenameTrackAction.cs" />
+    <Compile Include="Editor\GUI\Timeline\Undo\ReorderTrackAction.cs" />
+    <Compile Include="Editor\GUI\Timeline\Undo\TimelineUndoBlock.cs" />
+    <Compile Include="Editor\GUI\Timeline\Undo\TrackUndoBlock.cs" />
+    <Compile Include="Editor\GUI\ToolStrip.cs" />
+    <Compile Include="Editor\GUI\ToolStripButton.cs" />
+    <Compile Include="Editor\GUI\ToolStripSeparator.cs" />
+    <Compile Include="Editor\GUI\Tree\Tree.cs" />
+    <Compile Include="Editor\GUI\Tree\TreeNode.cs" />
+    <Compile Include="Editor\GUI\Tree\TreeNodeWithAddons.cs" />
+    <Compile Include="Editor\GUI\WindowDecorations.cs" />
+    <Compile Include="Editor\History\HistoryStack.cs" />
+    <Compile Include="Editor\History\IHistoryAction.cs" />
+    <Compile Include="Editor\History\UndoActionObject.cs" />
+    <Compile Include="Editor\IEditable.cs" />
+    <Compile Include="Editor\Modules\ContentDatabaseModule.cs" />
+    <Compile Include="Editor\Modules\ContentEditingModule.cs" />
+    <Compile Include="Editor\Modules\ContentFindingModule.cs" />
+    <Compile Include="Editor\Modules\ContentImportingModule.cs" />
+    <Compile Include="Editor\Modules\EditorModule.cs" />
+    <Compile Include="Editor\Modules\PrefabsModule.cs" />
+    <Compile Include="Editor\Modules\ProgressReportingModule.cs" />
+    <Compile Include="Editor\Modules\ProjectCacheModule.cs" />
+    <Compile Include="Editor\Modules\SceneEditingModule.cs" />
+    <Compile Include="Editor\Modules\SceneModule.cs" />
+    <Compile Include="Editor\Modules\SimulationModule.cs" />
+    <Compile Include="Editor\Modules\SourceCodeEditing\CachedCustomAnimGraphNodesCollection.cs" />
+    <Compile Include="Editor\Modules\SourceCodeEditing\CachedTypesCollection.cs" />
+    <Compile Include="Editor\Modules\SourceCodeEditing\CodeDocsModule.cs" />
+    <Compile Include="Editor\Modules\SourceCodeEditing\CodeEditingModule.cs" />
+    <Compile Include="Editor\Modules\SourceCodeEditing\DefaultSourceCodeEditor.cs" />
+    <Compile Include="Editor\Modules\SourceCodeEditing\InBuildSourceCodeEditor.cs" />
+    <Compile Include="Editor\Modules\SourceCodeEditing\ISourceCodeEditor.cs" />
+    <Compile Include="Editor\Modules\UIModule.cs" />
+    <Compile Include="Editor\Modules\WindowsModule.cs" />
+    <Compile Include="Editor\Options\Editor.cs" />
+    <Compile Include="Editor\Options\EditorOptions.cs" />
+    <Compile Include="Editor\Options\GeneralOptions.cs" />
+    <Compile Include="Editor\Options\InputBinding.cs" />
+    <Compile Include="Editor\Options\InputOptions.cs" />
+    <Compile Include="Editor\Options\InterfaceOptions.cs" />
+    <Compile Include="Editor\Options\OptionsModule.cs" />
+    <Compile Include="Editor\Options\SourceCodeOptions.cs" />
+    <Compile Include="Editor\Options\ThemeOptions.cs" />
+    <Compile Include="Editor\Options\ViewportOptions.cs" />
+    <Compile Include="Editor\Options\VisualOptions.cs" />
+    <Compile Include="Editor\Plugins\EditorPlugin.cs" />
+    <Compile Include="Editor\Plugins\PluginUtils.cs" />
+    <Compile Include="Editor\Progress\Handlers\BakeEnvProbesProgress.cs" />
+    <Compile Include="Editor\Progress\Handlers\BakeLightmapsProgress.cs" />
+    <Compile Include="Editor\Progress\Handlers\BuildingGameProgress.cs" />
+    <Compile Include="Editor\Progress\Handlers\CodeEditorOpenProgress.cs" />
+    <Compile Include="Editor\Progress\Handlers\CompileScriptsProgress.cs" />
+    <Compile Include="Editor\Progress\Handlers\GenerateScriptsProjectFilesProgress.cs" />
+    <Compile Include="Editor\Progress\Handlers\ImportAssetsProgress.cs" />
+    <Compile Include="Editor\Progress\Handlers\LoadAssetsProgress.cs" />
+    <Compile Include="Editor\Progress\Handlers\NavMeshBuildingProgress.cs" />
+    <Compile Include="Editor\Progress\ProgressHandler.cs" />
+    <Compile Include="Editor\ProjectInfo.cs" />
+    <Compile Include="Editor\SceneGraph\ActorChildNode.cs" />
+    <Compile Include="Editor\SceneGraph\ActorNode.cs" />
+    <Compile Include="Editor\SceneGraph\ActorNodeWithIcon.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\AnimatedModelNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\AudioListenerNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\AudioSourceNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\BoneSocketNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\BoxBrushNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\BoxColliderNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\BoxVolumeNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\CameraNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\ClothNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\ColliderNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\DecalNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\DirectionalLightNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\EnvironmentProbeNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\ExponentialHeightFogNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\FoliageNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\JointNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\NavLinkNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\NavMeshBoundsVolumeNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\NavModifierVolumeNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\ParticleEffectNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\PointLightNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\PostFxVolumeNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\RigidBodyNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\SceneAnimationPlayerNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\SceneNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\SkyboxNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\SkyLightNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\SkyNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\SplineNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\SpotLightNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\SpriteRenderNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\StaticModelNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\TerrainNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\TextRenderNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\UICanvasNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\UIControlNode.cs" />
+    <Compile Include="Editor\SceneGraph\Actors\VideoPlayerEditor.cs" />
+    <Compile Include="Editor\SceneGraph\GUI\ActorTreeNode.cs" />
+    <Compile Include="Editor\SceneGraph\GUI\SceneTreeNode.cs" />
+    <Compile Include="Editor\SceneGraph\ISceneEditingContext.cs" />
+    <Compile Include="Editor\SceneGraph\LocalSceneGraph.cs" />
+    <Compile Include="Editor\SceneGraph\RootNode.cs" />
+    <Compile Include="Editor\SceneGraph\SceneGraphFactory.cs" />
+    <Compile Include="Editor\SceneGraph\SceneGraphNode.cs" />
+    <Compile Include="Editor\SceneGraph\SceneGraphTools.cs" />
+    <Compile Include="Editor\Scripting\ScriptsBuilder.cs" />
+    <Compile Include="Editor\Scripting\ScriptType.cs" />
+    <Compile Include="Editor\Scripting\ScriptType.Custom.cs" />
+    <Compile Include="Editor\Scripting\ScriptType.Interfaces.cs" />
+    <Compile Include="Editor\Scripting\TypeUtils.cs" />
+    <Compile Include="Editor\States\BuildingLightingState.cs" />
+    <Compile Include="Editor\States\BuildingScenesState.cs" />
+    <Compile Include="Editor\States\ChangingScenesState.cs" />
+    <Compile Include="Editor\States\ClosingState.cs" />
+    <Compile Include="Editor\States\EditingSceneState.cs" />
+    <Compile Include="Editor\States\EditorState.cs" />
+    <Compile Include="Editor\States\EditorStateMachine.cs" />
+    <Compile Include="Editor\States\InvalidStateException.cs" />
+    <Compile Include="Editor\States\LoadingState.cs" />
+    <Compile Include="Editor\States\PlayingState.cs" />
+    <Compile Include="Editor\States\ReloadingScriptsState.cs" />
+    <Compile Include="Editor\Surface\AnimationGraphFunctionSurface.cs" />
+    <Compile Include="Editor\Surface\AnimGraphSurface.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Animation.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Animation.MultiBlend.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Animation.StateMachine.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Animation.TransitionEditor.cs" />
+    <Compile Include="Editor\Surface\Archetypes\BehaviorTree.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Bitwise.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Boolean.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Collections.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Comparisons.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Constants.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Custom.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Flow.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Function.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Layers.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Material.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Math.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Packing.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Parameters.cs" />
+    <Compile Include="Editor\Surface\Archetypes\ParticleModules.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Particles.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Textures.cs" />
+    <Compile Include="Editor\Surface\Archetypes\Tools.cs" />
+    <Compile Include="Editor\Surface\AttributesEditor.cs" />
+    <Compile Include="Editor\Surface\BehaviorTreeSurface.cs" />
+    <Compile Include="Editor\Surface\Constants.cs" />
+    <Compile Include="Editor\Surface\ContextMenu\VisjectCM.cs" />
+    <Compile Include="Editor\Surface\ContextMenu\VisjectCMGroup.cs" />
+    <Compile Include="Editor\Surface\ContextMenu\VisjectCMItem.cs" />
+    <Compile Include="Editor\Surface\Elements\ActorSelect.cs" />
+    <Compile Include="Editor\Surface\Elements\AssetSelect.cs" />
+    <Compile Include="Editor\Surface\Elements\BoolValue.cs" />
+    <Compile Include="Editor\Surface\Elements\Box.cs" />
+    <Compile Include="Editor\Surface\Elements\BoxValue.cs" />
+    <Compile Include="Editor\Surface\Elements\ColorValue.cs" />
+    <Compile Include="Editor\Surface\Elements\ComboBoxElement.cs" />
+    <Compile Include="Editor\Surface\Elements\EnumValue.cs" />
+    <Compile Include="Editor\Surface\Elements\FloatValue.cs" />
+    <Compile Include="Editor\Surface\Elements\InputBox.cs" />
+    <Compile Include="Editor\Surface\Elements\IntegerValue.cs" />
+    <Compile Include="Editor\Surface\Elements\OutputBox.cs" />
+    <Compile Include="Editor\Surface\Elements\SkeletonBoneIndexSelectElement.cs" />
+    <Compile Include="Editor\Surface\Elements\SkeletonNodeNameSelectElement.cs" />
+    <Compile Include="Editor\Surface\Elements\TextBoxView.cs" />
+    <Compile Include="Editor\Surface\Elements\TextView.cs" />
+    <Compile Include="Editor\Surface\Elements\UnsignedIntegerValue.cs" />
+    <Compile Include="Editor\Surface\GroupArchetype.cs" />
+    <Compile Include="Editor\Surface\GUI\VisjectContextNavigationButton.cs" />
+    <Compile Include="Editor\Surface\IFunctionDependantNode.cs" />
+    <Compile Include="Editor\Surface\IParametersDependantNode.cs" />
+    <Compile Include="Editor\Surface\ISurfaceContext.cs" />
+    <Compile Include="Editor\Surface\ISurfaceNodeElement.cs" />
+    <Compile Include="Editor\Surface\IVisjectSurfaceOwner.cs" />
+    <Compile Include="Editor\Surface\MaterialFunctionSurface.cs" />
+    <Compile Include="Editor\Surface\MaterialSurface.cs" />
+    <Compile Include="Editor\Surface\NodeAlignmentType.cs" />
+    <Compile Include="Editor\Surface\NodeArchetype.cs" />
+    <Compile Include="Editor\Surface\NodeElementArchetype.cs" />
+    <Compile Include="Editor\Surface\NodeElementType.cs" />
+    <Compile Include="Editor\Surface\NodeFactory.cs" />
+    <Compile Include="Editor\Surface\NodeFlags.cs" />
+    <Compile Include="Editor\Surface\ParticleEmitterFunctionSurface.cs" />
+    <Compile Include="Editor\Surface\ParticleEmitterSurface.cs" />
+    <Compile Include="Editor\Surface\ResizableSurfaceNode.cs" />
+    <Compile Include="Editor\Surface\SurfaceComment.cs" />
+    <Compile Include="Editor\Surface\SurfaceControl.cs" />
+    <Compile Include="Editor\Surface\SurfaceMeta.cs" />
+    <Compile Include="Editor\Surface\SurfaceNode.cs" />
+    <Compile Include="Editor\Surface\SurfaceNodeElementControl.cs" />
+    <Compile Include="Editor\Surface\SurfaceParameter.cs" />
+    <Compile Include="Editor\Surface\SurfaceRootControl.cs" />
+    <Compile Include="Editor\Surface\SurfaceStyle.cs" />
+    <Compile Include="Editor\Surface\SurfaceUtils.cs" />
+    <Compile Include="Editor\Surface\TransformCoordinateSystem.cs" />
+    <Compile Include="Editor\Surface\Undo\AddRemoveNodeAction.cs" />
+    <Compile Include="Editor\Surface\Undo\BoxHandle.cs" />
+    <Compile Include="Editor\Surface\Undo\ConnectBoxesAction.cs" />
+    <Compile Include="Editor\Surface\Undo\ContextHandle.cs" />
+    <Compile Include="Editor\Surface\Undo\EditNodeConnections.cs" />
+    <Compile Include="Editor\Surface\Undo\EditNodeValuesAction.cs" />
+    <Compile Include="Editor\Surface\Undo\MoveNodesAction.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.Connecting.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.Context.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.ContextMenu.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.CopyPaste.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.DragDrop.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.Draw.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.Formatting.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.Input.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.Parameters.cs" />
+    <Compile Include="Editor\Surface\VisjectSurface.Serialization.cs" />
+    <Compile Include="Editor\Surface\VisjectSurfaceContext.cs" />
+    <Compile Include="Editor\Surface\VisjectSurfaceContext.Serialization.cs" />
+    <Compile Include="Editor\Surface\VisjectSurfaceWindow.cs" />
+    <Compile Include="Editor\Surface\VisualScriptSurface.cs" />
+    <Compile Include="Editor\Tools\ClothPainting.cs" />
+    <Compile Include="Editor\Tools\Foliage\Brush.cs" />
+    <Compile Include="Editor\Tools\Foliage\EditFoliageGizmo.cs" />
+    <Compile Include="Editor\Tools\Foliage\EditFoliageGizmoMode.cs" />
+    <Compile Include="Editor\Tools\Foliage\EditFoliageSelectionOutline.cs" />
+    <Compile Include="Editor\Tools\Foliage\EditTab.cs" />
+    <Compile Include="Editor\Tools\Foliage\FoliageTab.cs" />
+    <Compile Include="Editor\Tools\Foliage\FoliageTypesTab.cs" />
+    <Compile Include="Editor\Tools\Foliage\PaintFoliageGizmo.cs" />
+    <Compile Include="Editor\Tools\Foliage\PaintFoliageGizmoMode.cs" />
+    <Compile Include="Editor\Tools\Foliage\PaintTab.cs" />
+    <Compile Include="Editor\Tools\Foliage\Undo\DeleteInstanceAction.cs" />
+    <Compile Include="Editor\Tools\Foliage\Undo\EditFoliageAction.cs" />
+    <Compile Include="Editor\Tools\Foliage\Undo\EditInstanceAction.cs" />
+    <Compile Include="Editor\Tools\Foliage\Undo\EditSelectedInstanceIndexAction.cs" />
+    <Compile Include="Editor\Tools\Terrain\Brushes\Brush.cs" />
+    <Compile Include="Editor\Tools\Terrain\Brushes\CircleBrush.cs" />
+    <Compile Include="Editor\Tools\Terrain\CarveTab.cs" />
+    <Compile Include="Editor\Tools\Terrain\CreateTerrainDialog.cs" />
+    <Compile Include="Editor\Tools\Terrain\EditTab.cs" />
+    <Compile Include="Editor\Tools\Terrain\EditTerrainGizmo.cs" />
+    <Compile Include="Editor\Tools\Terrain\EditTerrainGizmoMode.cs" />
+    <Compile Include="Editor\Tools\Terrain\Paint\Mode.cs" />
+    <Compile Include="Editor\Tools\Terrain\Paint\SingleLayerMode.cs" />
+    <Compile Include="Editor\Tools\Terrain\PaintTab.cs" />
+    <Compile Include="Editor\Tools\Terrain\PaintTerrainGizmo.cs" />
+    <Compile Include="Editor\Tools\Terrain\PaintTerrainGizmoMode.cs" />
+    <Compile Include="Editor\Tools\Terrain\Paint\TerrainSplatmapImportEditor.cs" />
+    <Compile Include="Editor\Tools\Terrain\Paint\TerrainSplatmapImporter.cs" />
+    <Compile Include="Editor\Tools\Terrain\Sculpt\FlattenMode.cs" />
+    <Compile Include="Editor\Tools\Terrain\Sculpt\HolesMode.cs" />
+    <Compile Include="Editor\Tools\Terrain\Sculpt\Mode.cs" />
+    <Compile Include="Editor\Tools\Terrain\Sculpt\NoiseMode.cs" />
+    <Compile Include="Editor\Tools\Terrain\Sculpt\SculptMode.cs" />
+    <Compile Include="Editor\Tools\Terrain\Sculpt\SmoothMode.cs" />
+    <Compile Include="Editor\Tools\Terrain\SculptTab.cs" />
+    <Compile Include="Editor\Tools\Terrain\SculptTerrainGizmo.cs" />
+    <Compile Include="Editor\Tools\Terrain\SculptTerrainGizmoMode.cs" />
+    <Compile Include="Editor\Tools\Terrain\Undo\EditTerrainHeightMapAction.cs" />
+    <Compile Include="Editor\Tools\Terrain\Undo\EditTerrainHolesMapAction.cs" />
+    <Compile Include="Editor\Tools\Terrain\Undo\EditTerrainMapAction.cs" />
+    <Compile Include="Editor\Tools\Terrain\Undo\EditTerrainSplatMapAction.cs" />
+    <Compile Include="Editor\Tools\VertexPainting.cs" />
+    <Compile Include="Editor\Undo\Actions\AddRemoveScriptAction.cs" />
+    <Compile Include="Editor\Undo\Actions\BreakPrefabLinkAction.cs" />
+    <Compile Include="Editor\Undo\Actions\ChangeScriptAction.cs" />
+    <Compile Include="Editor\Undo\Actions\DeleteActorsAction.cs" />
+    <Compile Include="Editor\Undo\Actions\EditSplineAction.cs" />
+    <Compile Include="Editor\Undo\Actions\ParentActorsAction.cs" />
+    <Compile Include="Editor\Undo\Actions\PasteActorsAction.cs" />
+    <Compile Include="Editor\Undo\Actions\SelectionChangeAction.cs" />
+    <Compile Include="Editor\Undo\Actions\TransformObjectsAction.cs" />
+    <Compile Include="Editor\Undo\EditorUndo.cs" />
+    <Compile Include="Editor\Undo\ISceneEditAction.cs" />
+    <Compile Include="Editor\Undo\IUndoAction.cs" />
+    <Compile Include="Editor\Undo\MultiUndoAction.cs" />
+    <Compile Include="Editor\Undo\Undo.cs" />
+    <Compile Include="Editor\Undo\UndoActionBase.cs" />
+    <Compile Include="Editor\Undo\UndoBlock.cs" />
+    <Compile Include="Editor\Undo\UndoMultiBlock.cs" />
+    <Compile Include="Editor\Utilities\Constants.cs" />
+    <Compile Include="Editor\Utilities\DuplicateScenes.cs" />
+    <Compile Include="Editor\Utilities\Extensions.cs" />
+    <Compile Include="Editor\Utilities\MemberComparison.cs" />
+    <Compile Include="Editor\Utilities\MemberInfoPath.cs" />
+    <Compile Include="Editor\Utilities\ObjectSnapshot.cs" />
+    <Compile Include="Editor\Utilities\QueryFilterHelper.cs" />
+    <Compile Include="Editor\Utilities\SelectionCache.cs" />
+    <Compile Include="Editor\Utilities\ShuntingYardParser.cs" />
+    <Compile Include="Editor\Utilities\Units.cs" />
+    <Compile Include="Editor\Utilities\Utils.cs" />
+    <Compile Include="Editor\Viewport\Cameras\ArcBallCamera.cs" />
+    <Compile Include="Editor\Viewport\Cameras\FPSCamera.cs" />
+    <Compile Include="Editor\Viewport\Cameras\IViewportCamera.cs" />
+    <Compile Include="Editor\Viewport\Cameras\ViewportCamera.cs" />
+    <Compile Include="Editor\Viewport\EditorGizmoViewport.cs" />
+    <Compile Include="Editor\Viewport\EditorViewport.cs" />
+    <Compile Include="Editor\Viewport\MainEditorGizmoViewport.cs" />
+    <Compile Include="Editor\Viewport\Modes\EditorGizmoMode.cs" />
+    <Compile Include="Editor\Viewport\Modes\NoGizmoMode.cs" />
+    <Compile Include="Editor\Viewport\Modes\TransformGizmoMode.cs" />
+    <Compile Include="Editor\Viewport\PrefabWindowViewport.cs" />
+    <Compile Include="Editor\Viewport\Previews\AnimatedModelPreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\AnimationPreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\AssetPreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\AudioClipPreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\CubeTexturePreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\IESProfilePreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\MaterialPreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\ModelBasePreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\ModelPreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\ParticleEmitterPreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\ParticleSystemPreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\PrefabPreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\SkinnedModelPreview.cs" />
+    <Compile Include="Editor\Viewport\Previews\TexturePreview.cs" />
+    <Compile Include="Editor\Viewport\ViewportDraggingHelper.cs" />
+    <Compile Include="Editor\Viewport\Widgets\ViewportWidgetButton.cs" />
+    <Compile Include="Editor\Viewport\Widgets\ViewportWidgetsContainer.cs" />
+    <Compile Include="Editor\ViewportDebugDrawData.cs" />
+    <Compile Include="Editor\Windows\AboutDialog.cs" />
+    <Compile Include="Editor\Windows\AssetReferencesGraphWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\AnimationGraphFunctionWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\AnimationGraphWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\AnimationWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\AssetEditorWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\AudioClipWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\BehaviorTreeWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\CollisionDataWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\CubeTextureWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\FontWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\GameplayGlobalsWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\IESProfileWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\JsonAssetWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\LocalizedStringTableWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\MaterialFunctionWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\MaterialInstanceWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\MaterialWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\ModelBaseWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\ModelWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\ParticleEmitterFunctionWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\ParticleEmitterWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\ParticleSystemWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\PrefabWindow.Actions.cs" />
+    <Compile Include="Editor\Windows\Assets\PrefabWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\PrefabWindow.Hierarchy.cs" />
+    <Compile Include="Editor\Windows\Assets\PrefabWindow.Selection.cs" />
+    <Compile Include="Editor\Windows\Assets\PreviewsCacheWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\SceneAnimationWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\SkeletonMaskWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\SkinnedModelWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\SpriteAtlasWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\TextureWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\VideoWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\VisjectFunctionSurfaceWindow.cs" />
+    <Compile Include="Editor\Windows\Assets\VisualScriptWindow.cs" />
+    <Compile Include="Editor\Windows\ContentWindow.ContextMenu.cs" />
+    <Compile Include="Editor\Windows\ContentWindow.cs" />
+    <Compile Include="Editor\Windows\ContentWindow.Navigation.cs" />
+    <Compile Include="Editor\Windows\ContentWindow.Search.cs" />
+    <Compile Include="Editor\Windows\DebugLogWindow.cs" />
+    <Compile Include="Editor\Windows\EditGameWindow.cs" />
+    <Compile Include="Editor\Windows\EditorOptionsWindow.cs" />
+    <Compile Include="Editor\Windows\EditorWindow.cs" />
+    <Compile Include="Editor\Windows\GameCookerWindow.cs" />
+    <Compile Include="Editor\Windows\GameWindow.cs" />
+    <Compile Include="Editor\Windows\GraphicsQualityWindow.cs" />
+    <Compile Include="Editor\Windows\OutputLogWindow.cs" />
+    <Compile Include="Editor\Windows\PluginsWindow.cs" />
+    <Compile Include="Editor\Windows\Profiler\Assets.cs" />
+    <Compile Include="Editor\Windows\Profiler\CPU.cs" />
+    <Compile Include="Editor\Windows\Profiler\GPU.cs" />
+    <Compile Include="Editor\Windows\Profiler\Memory.cs" />
+    <Compile Include="Editor\Windows\Profiler\MemoryGPU.cs" />
+    <Compile Include="Editor\Windows\Profiler\Network.cs" />
+    <Compile Include="Editor\Windows\Profiler\Overall.cs" />
+    <Compile Include="Editor\Windows\Profiler\Physics.cs" />
+    <Compile Include="Editor\Windows\Profiler\ProfilerMode.cs" />
+    <Compile Include="Editor\Windows\Profiler\ProfilerWindow.cs" />
+    <Compile Include="Editor\Windows\Profiler\SamplesBuffer.cs" />
+    <Compile Include="Editor\Windows\Profiler\SingleChart.cs" />
+    <Compile Include="Editor\Windows\Profiler\Timeline.cs" />
+    <Compile Include="Editor\Windows\PropertiesWindow.cs" />
+    <Compile Include="Editor\Windows\SceneEditorWindow.cs" />
+    <Compile Include="Editor\Windows\SceneTreeWindow.ContextMenu.cs" />
+    <Compile Include="Editor\Windows\SceneTreeWindow.cs" />
+    <Compile Include="Editor\Windows\SceneTreeWindow.RenameWindow.cs" />
+    <Compile Include="Editor\Windows\Search\ContentFinder.cs" />
+    <Compile Include="Editor\Windows\Search\ContentSearchWindow.cs" />
+    <Compile Include="Editor\Windows\Search\SearchItem.cs" />
+    <Compile Include="Editor\Windows\StyleEditorWindow.cs" />
+    <Compile Include="Editor\Windows\ToolboxWindow.cs" />
+    <Compile Include="Editor\Windows\VisualScriptDebuggerWindow.cs" />
+    <Compile Include="Engine\AI\BehaviorKnowledgeSelector.cs" />
+    <Compile Include="Engine\AI\BehaviorTree.cs" />
+    <Compile Include="Engine\Animations\AnimationGraph.cs" />
+    <Compile Include="Engine\Animations\Curve.cs" />
+    <Compile Include="Engine\Audio\Audio.cs" />
+    <Compile Include="Engine\Content\Asset.cs" />
+    <Compile Include="Engine\Content\Content.cs" />
+    <Compile Include="Engine\Content\JsonAsset.cs" />
+    <Compile Include="Engine\Content\JsonAssetReference.cs" />
+    <Compile Include="Engine\Content\MaterialBase.cs" />
+    <Compile Include="Engine\Content\SkinnedModel.cs" />
+    <Compile Include="Engine\Core\Collections\CircularBuffer.cs" />
+    <Compile Include="Engine\Core\Collections\IOrderedDictionary.cs" />
+    <Compile Include="Engine\Core\Collections\OrderedDictionary.cs" />
+    <Compile Include="Engine\Core\Config\BuildSettings.cs" />
+    <Compile Include="Engine\Core\Config\GameSettings.cs" />
+    <Compile Include="Engine\Core\Config\LayersAndTagsSettings.cs" />
+    <Compile Include="Engine\Core\Math\BoundingBox.cs" />
+    <Compile Include="Engine\Core\Math\BoundingFrustum.cs" />
+    <Compile Include="Engine\Core\Math\BoundingSphere.cs" />
+    <Compile Include="Engine\Core\Math\CollisionsHelper.cs" />
+    <Compile Include="Engine\Core\Math\Color.cs" />
+    <Compile Include="Engine\Core\Math\Color.Palette.cs" />
+    <Compile Include="Engine\Core\Math\Color32.cs" />
+    <Compile Include="Engine\Core\Math\ColorHSV.cs" />
+    <Compile Include="Engine\Core\Math\Double2.cs" />
+    <Compile Include="Engine\Core\Math\Double3.cs" />
+    <Compile Include="Engine\Core\Math\Double4.cs" />
+    <Compile Include="Engine\Core\Math\Float2.cs" />
+    <Compile Include="Engine\Core\Math\Float3.cs" />
+    <Compile Include="Engine\Core\Math\Float4.cs" />
+    <Compile Include="Engine\Core\Math\FloatR10G10B10A2.cs" />
+    <Compile Include="Engine\Core\Math\FloatR11G11B10.cs" />
+    <Compile Include="Engine\Core\Math\Half.cs" />
+    <Compile Include="Engine\Core\Math\Half2.cs" />
+    <Compile Include="Engine\Core\Math\Half3.cs" />
+    <Compile Include="Engine\Core\Math\Half4.cs" />
+    <Compile Include="Engine\Core\Math\HalfUtils.cs" />
+    <Compile Include="Engine\Core\Math\Int2.cs" />
+    <Compile Include="Engine\Core\Math\Int3.cs" />
+    <Compile Include="Engine\Core\Math\Int4.cs" />
+    <Compile Include="Engine\Core\Math\Mathd.cs" />
+    <Compile Include="Engine\Core\Math\Mathf.cs" />
+    <Compile Include="Engine\Core\Math\Matrix.cs" />
+    <Compile Include="Engine\Core\Math\Matrix2x2.cs" />
+    <Compile Include="Engine\Core\Math\Matrix3x3.cs" />
+    <Compile Include="Engine\Core\Math\OrientedBoundingBox.cs" />
+    <Compile Include="Engine\Core\Math\Plane.cs" />
+    <Compile Include="Engine\Core\Math\Quaternion.cs" />
+    <Compile Include="Engine\Core\Math\Ray.cs" />
+    <Compile Include="Engine\Core\Math\Rectangle.cs" />
+    <Compile Include="Engine\Core\Math\SphericalHarmonics.cs" />
+    <Compile Include="Engine\Core\Math\Transform.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\ColorConverter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Double2Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Double3Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Double4Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Float2Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Float3Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Float4Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Int2Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Int3Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Int4Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\QuaternionConverter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Vector2Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Vector3Converter.cs" />
+    <Compile Include="Engine\Core\Math\TypeConverters\Vector4Converter.cs" />
+    <Compile Include="Engine\Core\Math\Vector2.cs" />
+    <Compile Include="Engine\Core\Math\Vector3.cs" />
+    <Compile Include="Engine\Core\Math\Vector4.cs" />
+    <Compile Include="Engine\Core\Math\Viewport.cs" />
+    <Compile Include="Engine\Core\Types\LayersMask.cs" />
+    <Compile Include="Engine\Debug\Assert.cs" />
+    <Compile Include="Engine\Debug\AssertionException.cs" />
+    <Compile Include="Engine\Debug\DebugCommands.cs" />
+    <Compile Include="Engine\Debug\DebugDraw.cs" />
+    <Compile Include="Engine\Debug\FloatComparer.cs" />
+    <Compile Include="Engine\Engine\Debug.cs" />
+    <Compile Include="Engine\Engine\DebugLogHandler.cs" />
+    <Compile Include="Engine\Engine\GameplayGlobals.cs" />
+    <Compile Include="Engine\Engine\IDrawable.cs" />
+    <Compile Include="Engine\Engine\ILogger.cs" />
+    <Compile Include="Engine\Engine\ILogHandler.cs" />
+    <Compile Include="Engine\Engine\InputAxis.cs" />
+    <Compile Include="Engine\Engine\InputEvent.cs" />
+    <Compile Include="Engine\Engine\Logger.cs" />
+    <Compile Include="Engine\Engine\NativeInterop.cs" />
+    <Compile Include="Engine\Engine\NativeInterop.Invoker.cs" />
+    <Compile Include="Engine\Engine\NativeInterop.Managed.cs" />
+    <Compile Include="Engine\Engine\NativeInterop.Marshallers.cs" />
+    <Compile Include="Engine\Engine\NativeInterop.Unmanaged.cs" />
+    <Compile Include="Engine\Engine\RandomStream.cs" />
+    <Compile Include="Engine\Engine\RandomUtil.cs" />
+    <Compile Include="Engine\Engine\SceneReference.cs" />
+    <Compile Include="Engine\Graphics\GPUBufferDescription.cs" />
+    <Compile Include="Engine\Graphics\Materials\MaterialInfo.cs" />
+    <Compile Include="Engine\Graphics\Models\Mesh.cs" />
+    <Compile Include="Engine\Graphics\Models\MeshAccessor.cs" />
+    <Compile Include="Engine\Graphics\Models\MeshBase.cs" />
+    <Compile Include="Engine\Graphics\Models\Model.cs" />
+    <Compile Include="Engine\Graphics\Models\SkinnedMesh.cs" />
+    <Compile Include="Engine\Graphics\PixelFormatSampler.cs" />
+    <Compile Include="Engine\Graphics\PostProcessSettings.cs" />
+    <Compile Include="Engine\Graphics\RenderTask.cs" />
+    <Compile Include="Engine\Graphics\RenderView.cs" />
+    <Compile Include="Engine\Graphics\Textures\GPUSamplerDescription.cs" />
+    <Compile Include="Engine\Graphics\Textures\GPUTextureDescription.cs" />
+    <Compile Include="Engine\Graphics\Textures\TextureBase.cs" />
+    <Compile Include="Engine\Input\InputSettings.cs" />
+    <Compile Include="Engine\Level\Actor.cs" />
+    <Compile Include="Engine\Level\DirectionalLight.cs" />
+    <Compile Include="Engine\Level\Level.cs" />
+    <Compile Include="Engine\Level\MeshReference.cs" />
+    <Compile Include="Engine\Level\Scene.cs" />
+    <Compile Include="Engine\Level\Spline.cs" />
+    <Compile Include="Engine\Level\Tags.cs" />
+    <Compile Include="Engine\Localization\LocalizedString.cs" />
+    <Compile Include="Engine\Navigation\NavigationSettings.cs" />
+    <Compile Include="Engine\Networking\NetworkClient.cs" />
+    <Compile Include="Engine\Networking\NetworkMessage.cs" />
+    <Compile Include="Engine\Networking\NetworkReplicationHierarchy.cs" />
+    <Compile Include="Engine\Networking\NetworkReplicator.cs" />
+    <Compile Include="Engine\Networking\NetworkStream.cs" />
+    <Compile Include="Engine\Particles\ParticleEffect.cs" />
+    <Compile Include="Engine\Physics\CollisionData.cs" />
+    <Compile Include="Engine\Physics\Collisions.cs" />
+    <Compile Include="Engine\Physics\D6Joint.cs" />
+    <Compile Include="Engine\Physics\HingeJoint.cs" />
+    <Compile Include="Engine\Physics\Limits.cs" />
+    <Compile Include="Engine\Physics\PhysicsSettings.cs" />
+    <Compile Include="Engine\Platform\CreateWindowSettings.cs" />
+    <Compile Include="Engine\Platform\Platform.cs" />
+    <Compile Include="Engine\Platform\SettingsBase.cs" />
+    <Compile Include="Engine\Platform\Window.cs" />
+    <Compile Include="Engine\Render2D\FontAsset.cs" />
+    <Compile Include="Engine\Render2D\FontReference.cs" />
+    <Compile Include="Engine\Render2D\Render2D.cs" />
+    <Compile Include="Engine\Render2D\SpriteAtlas.cs" />
+    <Compile Include="Engine\Render2D\TextLayoutOptions.cs" />
+    <Compile Include="Engine\Render2D\TextRange.cs" />
+    <Compile Include="Engine\Renderer\Renderer.cs" />
+    <Compile Include="Engine\Scripting\Attributes\CollectionAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\ActorContextMenuAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\ActorToolboxAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\AssetReferenceAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\ButtonAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\CategoryAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\ContentContextMenuAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\CustomEditorAliasAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\CustomEditorAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\DefaultEditorAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\EditorDisplayAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\EditorOrderAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\EnumDisplayAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\ExpandGroupsAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\HeaderAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\HideInEditorAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\LimitAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\MultilineTextAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\NoUndoAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\RangeAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\ReadOnlyAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\RequireActorAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\RequireScriptAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\ShowInEditorAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\SpaceAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\TooltipAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\TypeReferenceAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\ValueCategoryAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\VisibleIfAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\Editor\WatermarkAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\EnumStringAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\ExecuteInEditModeAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\ModuleInitializerAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\MonoPInvokeCallbackAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\NetworkReplicatedAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\NetworkRpcAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\NoAnimateAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\NoSerializeAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\PluginLoadOrder.cs" />
+    <Compile Include="Engine\Scripting\Attributes\SerializeAttribute.cs" />
+    <Compile Include="Engine\Scripting\Attributes\UnmanagedAttribute.cs" />
+    <Compile Include="Engine\Scripting\Object.cs" />
+    <Compile Include="Engine\Scripting\Plugins\PluginManager.cs" />
+    <Compile Include="Engine\Scripting\Script.cs" />
+    <Compile Include="Engine\Scripting\Scripting.cs" />
+    <Compile Include="Engine\Scripting\SoftObjectReference.cs" />
+    <Compile Include="Engine\Scripting\SoftTypeReference.cs" />
+    <Compile Include="Engine\Serialization\JsonConverters.cs" />
+    <Compile Include="Engine\Serialization\JsonCustomSerializers\ExtendedDefaultContractResolver.cs" />
+    <Compile Include="Engine\Serialization\JsonCustomSerializers\ExtendedSerializationBinder.cs" />
+    <Compile Include="Engine\Serialization\JsonSerializer.cs" />
+    <Compile Include="Engine\Serialization\UnmanagedMemoryStream.cs" />
+    <Compile Include="Engine\Serialization\UnmanagedStringReader.cs" />
+    <Compile Include="Engine\Terrain\Terrain.cs" />
+    <Compile Include="Engine\Tests\TestCircularBuffer.cs" />
+    <Compile Include="Engine\Tests\TestColor.cs" />
+    <Compile Include="Engine\Tests\TestContainerControl.cs" />
+    <Compile Include="Engine\Tests\TestControl.cs" />
+    <Compile Include="Engine\Tests\TestEditorUtils.cs" />
+    <Compile Include="Engine\Tests\TestFloatR10G10B10A2.cs" />
+    <Compile Include="Engine\Tests\TestFloatR11G11B10.cs" />
+    <Compile Include="Engine\Tests\TestHistoryStack.cs" />
+    <Compile Include="Engine\Tests\TestHtmlParser.cs" />
+    <Compile Include="Engine\Tests\TestMath.cs" />
+    <Compile Include="Engine\Tests\TestModulusOperator.cs" />
+    <Compile Include="Engine\Tests\TestPropertyNameUI.cs" />
+    <Compile Include="Engine\Tests\TestQuaternion.cs" />
+    <Compile Include="Engine\Tests\TestQueryFilterHelper.cs" />
+    <Compile Include="Engine\Tests\TestSceneGraph.cs" />
+    <Compile Include="Engine\Tests\TestScripting.cs" />
+    <Compile Include="Engine\Tests\TestSerialization.cs" />
+    <Compile Include="Engine\Tests\TestStringUtils.cs" />
+    <Compile Include="Engine\Tests\TestSurface.cs" />
+    <Compile Include="Engine\Tests\TestTransform.cs" />
+    <Compile Include="Engine\Tests\TestUndo.cs" />
+    <Compile Include="Engine\UI\ControlReference.cs" />
+    <Compile Include="Engine\UI\GUI\Brushes\GPUTextureBrush.cs" />
+    <Compile Include="Engine\UI\GUI\Brushes\IBrush.cs" />
+    <Compile Include="Engine\UI\GUI\Brushes\LinearGradientBrush.cs" />
+    <Compile Include="Engine\UI\GUI\Brushes\MaterialBrush.cs" />
+    <Compile Include="Engine\UI\GUI\Brushes\SolidColorBrush.cs" />
+    <Compile Include="Engine\UI\GUI\Brushes\SpriteBrush.cs" />
+    <Compile Include="Engine\UI\GUI\Brushes\TextureBrush.cs" />
+    <Compile Include="Engine\UI\GUI\Brushes\UIBrush.cs" />
+    <Compile Include="Engine\UI\GUI\Brushes\VideoBrush.cs" />
+    <Compile Include="Engine\UI\GUI\CanvasContainer.cs" />
+    <Compile Include="Engine\UI\GUI\CanvasRootControl.cs" />
+    <Compile Include="Engine\UI\GUI\CanvasScaler.cs" />
+    <Compile Include="Engine\UI\GUI\Common\Border.cs" />
+    <Compile Include="Engine\UI\GUI\Common\Button.cs" />
+    <Compile Include="Engine\UI\GUI\Common\CheckBox.cs" />
+    <Compile Include="Engine\UI\GUI\Common\Dropdown.cs" />
+    <Compile Include="Engine\UI\GUI\Common\Image.cs" />
+    <Compile Include="Engine\UI\GUI\Common\Label.cs" />
+    <Compile Include="Engine\UI\GUI\Common\ProgressBar.cs" />
+    <Compile Include="Engine\UI\GUI\Common\RenderToTextureControl.cs" />
+    <Compile Include="Engine\UI\GUI\Common\RichTextBox.cs" />
+    <Compile Include="Engine\UI\GUI\Common\RichTextBox.Parsing.cs" />
+    <Compile Include="Engine\UI\GUI\Common\RichTextBox.Tags.cs" />
+    <Compile Include="Engine\UI\GUI\Common\RichTextBoxBase.cs" />
+    <Compile Include="Engine\UI\GUI\Common\Slider.cs" />
+    <Compile Include="Engine\UI\GUI\Common\Spacer.cs" />
+    <Compile Include="Engine\UI\GUI\Common\TextBox.cs" />
+    <Compile Include="Engine\UI\GUI\Common\TextBoxBase.cs" />
+    <Compile Include="Engine\UI\GUI\ContainerControl.cs" />
+    <Compile Include="Engine\UI\GUI\Control.Bounds.cs" />
+    <Compile Include="Engine\UI\GUI\Control.cs" />
+    <Compile Include="Engine\UI\GUI\DragData.cs" />
+    <Compile Include="Engine\UI\GUI\DragDataFiles.cs" />
+    <Compile Include="Engine\UI\GUI\DragDataText.cs" />
+    <Compile Include="Engine\UI\GUI\Enums.cs" />
+    <Compile Include="Engine\UI\GUI\Margin.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\AlphaPanel.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\BlurPanel.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\DropPanel.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\GridPanel.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\HorizontalPanel.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\HScrollBar.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\Panel.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\PanelWithMargins.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\ScrollBar.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\SplitPanel.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\TilesPanel.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\UniformGridPanel.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\VerticalPanel.cs" />
+    <Compile Include="Engine\UI\GUI\Panels\VScrollBar.cs" />
+    <Compile Include="Engine\UI\GUI\RenderOutputControl.cs" />
+    <Compile Include="Engine\UI\GUI\RootControl.cs" />
+    <Compile Include="Engine\UI\GUI\ScrollableControl.cs" />
+    <Compile Include="Engine\UI\GUI\Special\RadialMenu.cs" />
+    <Compile Include="Engine\UI\GUI\Style.cs" />
+    <Compile Include="Engine\UI\GUI\TextBlock.cs" />
+    <Compile Include="Engine\UI\GUI\TextBlockStyle.cs" />
+    <Compile Include="Engine\UI\GUI\Tooltip.cs" />
+    <Compile Include="Engine\UI\GUI\WindowRootControl.cs" />
+    <Compile Include="Engine\UI\UICanvas.cs" />
+    <Compile Include="Engine\UI\UIControl.cs" />
+    <Compile Include="Engine\Utilities\Extensions.cs" />
+    <Compile Include="Engine\Utilities\HtmlParser.cs" />
+    <Compile Include="Engine\Utilities\MeshDataCache.cs" />
+    <Compile Include="Engine\Utilities\PerlinNoise.cs" />
+    <Compile Include="Engine\Utilities\State.cs" />
+    <Compile Include="Engine\Utilities\StateMachine.cs" />
+    <Compile Include="Engine\Utilities\StringUtils.cs" />
+    <Compile Include="Engine\Utilities\TypeUtils.cs" />
+    <Compile Include="Engine\Utilities\Utils.cs" />
+    <Compile Include="Engine\Utilities\VariantUtils.cs" />
+    <Compile Include="FlaxEngine.Gen.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Editor.Windows.Debug|x64' ">
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\tracy\tracy.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Profiler\Profiler.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Platform\Platform.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\fmt\fmt.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Core\Core.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Debug\Debug.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Main\Main.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\PhysX\PhysX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\NvCloth\NvCloth.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Physics\Physics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\lz4\lz4.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\minimp3\minimp3.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\ogg\ogg.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\vorbis\vorbis.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\AudioTool\AudioTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\DirectXTex\DirectXTex.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\tinyexr\tinyexr.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\astc\astc.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\basis_universal\basis_universal.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\TextureTool\TextureTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\assimp\assimp.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\OpenFBX\OpenFBX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\DirectXMesh\DirectXMesh.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\UVAtlas\UVAtlas.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\meshoptimizer\meshoptimizer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\MikkTSpace\MikkTSpace.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\ModelTool\ModelTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\GraphicsDeviceNull\GraphicsDeviceNull.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\nvapi\nvapi.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\AGS\AGS.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\GraphicsDeviceDX11\GraphicsDeviceDX11.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\GraphicsDeviceDX12\GraphicsDeviceDX12.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\ShaderCompilerD3D\ShaderCompilerD3D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\ShaderCompilerDX\ShaderCompilerDX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\glslang\glslang.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\spirv-tools\spirv-tools.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\ShaderCompilerVulkan\ShaderCompilerVulkan.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\ShaderCompilerWebGPU\ShaderCompilerWebGPU.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\ShadersCompilation\ShadersCompilation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Graphics\Graphics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Utilities\Utilities.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Particles\Particles.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Visject\Visject.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\MaterialGenerator\MaterialGenerator.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\ContentImporters\ContentImporters.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\ContentExporters\ContentExporters.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Content\Content.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Renderer\Renderer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\nethost\nethost.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Scripting\Scripting.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\rapidjson\rapidjson.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Serialization\Serialization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\CSG\CSG.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Level\Level.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\recastnavigation\recastnavigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Navigation\Navigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\AI\AI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Animations\Animations.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Audio\Audio.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Video\Video.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Foliage\Foliage.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\freetype\freetype.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\msdfgen\msdfgen.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Render2D\Render2D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Input\Input.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Networking\Networking.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Streaming\Streaming.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Terrain\Terrain.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Threading\Threading.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Localization\Localization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\UI\UI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Online\Online.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Engine\Engine.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\pugixml\pugixml.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\curl\curl.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\ShadowsOfMordor\ShadowsOfMordor.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Debug\Editor\Editor.Bindings.Gen.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Editor.Windows.Development|x64' ">
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\tracy\tracy.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Profiler\Profiler.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Platform\Platform.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\fmt\fmt.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Core\Core.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Debug\Debug.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Main\Main.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\PhysX\PhysX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\NvCloth\NvCloth.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Physics\Physics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\lz4\lz4.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\minimp3\minimp3.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\ogg\ogg.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\vorbis\vorbis.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\AudioTool\AudioTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\DirectXTex\DirectXTex.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\tinyexr\tinyexr.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\astc\astc.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\basis_universal\basis_universal.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\TextureTool\TextureTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\assimp\assimp.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\OpenFBX\OpenFBX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\DirectXMesh\DirectXMesh.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\UVAtlas\UVAtlas.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\meshoptimizer\meshoptimizer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\MikkTSpace\MikkTSpace.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\ModelTool\ModelTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\GraphicsDeviceNull\GraphicsDeviceNull.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\nvapi\nvapi.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\AGS\AGS.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\GraphicsDeviceDX11\GraphicsDeviceDX11.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\GraphicsDeviceDX12\GraphicsDeviceDX12.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\ShaderCompilerD3D\ShaderCompilerD3D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\ShaderCompilerDX\ShaderCompilerDX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\glslang\glslang.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\spirv-tools\spirv-tools.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\ShaderCompilerVulkan\ShaderCompilerVulkan.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\ShaderCompilerWebGPU\ShaderCompilerWebGPU.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\ShadersCompilation\ShadersCompilation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Graphics\Graphics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Utilities\Utilities.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Particles\Particles.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Visject\Visject.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\MaterialGenerator\MaterialGenerator.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\ContentImporters\ContentImporters.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\ContentExporters\ContentExporters.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Content\Content.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Renderer\Renderer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\nethost\nethost.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Scripting\Scripting.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\rapidjson\rapidjson.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Serialization\Serialization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\CSG\CSG.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Level\Level.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\recastnavigation\recastnavigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Navigation\Navigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\AI\AI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Animations\Animations.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Audio\Audio.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Video\Video.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Foliage\Foliage.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\freetype\freetype.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\msdfgen\msdfgen.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Render2D\Render2D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Input\Input.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Networking\Networking.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Streaming\Streaming.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Terrain\Terrain.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Threading\Threading.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Localization\Localization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\UI\UI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Online\Online.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Engine\Engine.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\pugixml\pugixml.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\curl\curl.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\ShadowsOfMordor\ShadowsOfMordor.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Development\Editor\Editor.Bindings.Gen.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Editor.Windows.Release|x64' ">
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\tracy\tracy.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Profiler\Profiler.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Platform\Platform.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\fmt\fmt.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Core\Core.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Debug\Debug.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Main\Main.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\PhysX\PhysX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\NvCloth\NvCloth.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Physics\Physics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\lz4\lz4.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\minimp3\minimp3.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\ogg\ogg.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\vorbis\vorbis.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\AudioTool\AudioTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\DirectXTex\DirectXTex.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\tinyexr\tinyexr.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\astc\astc.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\basis_universal\basis_universal.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\TextureTool\TextureTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\assimp\assimp.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\OpenFBX\OpenFBX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\DirectXMesh\DirectXMesh.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\UVAtlas\UVAtlas.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\meshoptimizer\meshoptimizer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\MikkTSpace\MikkTSpace.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\ModelTool\ModelTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\GraphicsDeviceNull\GraphicsDeviceNull.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\nvapi\nvapi.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\AGS\AGS.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\GraphicsDeviceDX11\GraphicsDeviceDX11.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\GraphicsDeviceDX12\GraphicsDeviceDX12.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\ShaderCompilerD3D\ShaderCompilerD3D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\ShaderCompilerDX\ShaderCompilerDX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\glslang\glslang.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\spirv-tools\spirv-tools.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\ShaderCompilerVulkan\ShaderCompilerVulkan.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\ShaderCompilerWebGPU\ShaderCompilerWebGPU.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\ShadersCompilation\ShadersCompilation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Graphics\Graphics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Utilities\Utilities.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Particles\Particles.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Visject\Visject.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\MaterialGenerator\MaterialGenerator.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\ContentImporters\ContentImporters.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\ContentExporters\ContentExporters.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Content\Content.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Renderer\Renderer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\nethost\nethost.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Scripting\Scripting.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\rapidjson\rapidjson.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Serialization\Serialization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\CSG\CSG.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Level\Level.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\recastnavigation\recastnavigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Navigation\Navigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\AI\AI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Animations\Animations.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Audio\Audio.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Video\Video.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Foliage\Foliage.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\freetype\freetype.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\msdfgen\msdfgen.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Render2D\Render2D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Input\Input.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Networking\Networking.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Streaming\Streaming.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Terrain\Terrain.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Threading\Threading.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Localization\Localization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\UI\UI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Online\Online.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Engine\Engine.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\pugixml\pugixml.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\curl\curl.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\ShadowsOfMordor\ShadowsOfMordor.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxEditor\Windows\x64\Release\Editor\Editor.Bindings.Gen.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Game.Windows.Debug|x64' ">
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\tracy\tracy.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Profiler\Profiler.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Platform\Platform.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\fmt\fmt.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Core\Core.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Main\Main.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\PhysX\PhysX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\NvCloth\NvCloth.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Physics\Physics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\lz4\lz4.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\minimp3\minimp3.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\ogg\ogg.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\vorbis\vorbis.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\AudioTool\AudioTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\DirectXTex\DirectXTex.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\TextureTool\TextureTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\ModelTool\ModelTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\GraphicsDeviceNull\GraphicsDeviceNull.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\nvapi\nvapi.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\AGS\AGS.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\GraphicsDeviceDX11\GraphicsDeviceDX11.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\GraphicsDeviceDX12\GraphicsDeviceDX12.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Graphics\Graphics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Utilities\Utilities.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Particles\Particles.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Content\Content.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Renderer\Renderer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\nethost\nethost.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Scripting\Scripting.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\rapidjson\rapidjson.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Serialization\Serialization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Level\Level.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\recastnavigation\recastnavigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Navigation\Navigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\AI\AI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Visject\Visject.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Animations\Animations.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Audio\Audio.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Video\Video.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Debug\Debug.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Foliage\Foliage.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\freetype\freetype.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\msdfgen\msdfgen.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Render2D\Render2D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Input\Input.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Networking\Networking.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Streaming\Streaming.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Terrain\Terrain.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Threading\Threading.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Localization\Localization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\UI\UI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Online\Online.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Debug\Engine\Engine.Bindings.Gen.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Game.Windows.Development|x64' ">
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\tracy\tracy.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Profiler\Profiler.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Platform\Platform.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\fmt\fmt.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Core\Core.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Main\Main.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\PhysX\PhysX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\NvCloth\NvCloth.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Physics\Physics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\lz4\lz4.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\minimp3\minimp3.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\ogg\ogg.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\vorbis\vorbis.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\AudioTool\AudioTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\DirectXTex\DirectXTex.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\TextureTool\TextureTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\ModelTool\ModelTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\GraphicsDeviceNull\GraphicsDeviceNull.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\nvapi\nvapi.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\AGS\AGS.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\GraphicsDeviceDX11\GraphicsDeviceDX11.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\GraphicsDeviceDX12\GraphicsDeviceDX12.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Graphics\Graphics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Utilities\Utilities.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Particles\Particles.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Content\Content.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Renderer\Renderer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\nethost\nethost.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Scripting\Scripting.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\rapidjson\rapidjson.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Serialization\Serialization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Level\Level.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\recastnavigation\recastnavigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Navigation\Navigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\AI\AI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Visject\Visject.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Animations\Animations.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Audio\Audio.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Video\Video.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Debug\Debug.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Foliage\Foliage.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\freetype\freetype.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\msdfgen\msdfgen.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Render2D\Render2D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Input\Input.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Networking\Networking.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Streaming\Streaming.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Terrain\Terrain.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Threading\Threading.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Localization\Localization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\UI\UI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Online\Online.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Development\Engine\Engine.Bindings.Gen.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Game.Windows.Release|x64' ">
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Platform\Platform.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\fmt\fmt.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Core\Core.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Main\Main.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\PhysX\PhysX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\NvCloth\NvCloth.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Physics\Physics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\lz4\lz4.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\minimp3\minimp3.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\ogg\ogg.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\vorbis\vorbis.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\AudioTool\AudioTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\DirectXTex\DirectXTex.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\TextureTool\TextureTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\ModelTool\ModelTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\GraphicsDeviceNull\GraphicsDeviceNull.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\nvapi\nvapi.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\AGS\AGS.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\GraphicsDeviceDX11\GraphicsDeviceDX11.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\GraphicsDeviceDX12\GraphicsDeviceDX12.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Graphics\Graphics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Utilities\Utilities.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Particles\Particles.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Content\Content.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Renderer\Renderer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\nethost\nethost.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Scripting\Scripting.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\rapidjson\rapidjson.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Serialization\Serialization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Level\Level.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\recastnavigation\recastnavigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Navigation\Navigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\AI\AI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Visject\Visject.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Animations\Animations.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Audio\Audio.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Video\Video.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Debug\Debug.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Foliage\Foliage.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\freetype\freetype.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\msdfgen\msdfgen.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Render2D\Render2D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Input\Input.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Networking\Networking.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Streaming\Streaming.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Terrain\Terrain.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Threading\Threading.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Localization\Localization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\UI\UI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Online\Online.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxGame\Windows\x64\Release\Engine\Engine.Bindings.Gen.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Tests.Windows.Development|x64' ">
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\tracy\tracy.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Profiler\Profiler.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Platform\Platform.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\fmt\fmt.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Core\Core.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Debug\Debug.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Main\Main.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\PhysX\PhysX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\NvCloth\NvCloth.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Physics\Physics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\lz4\lz4.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\minimp3\minimp3.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\ogg\ogg.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\vorbis\vorbis.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\AudioTool\AudioTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\DirectXTex\DirectXTex.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\tinyexr\tinyexr.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\astc\astc.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\basis_universal\basis_universal.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\TextureTool\TextureTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\assimp\assimp.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\OpenFBX\OpenFBX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\DirectXMesh\DirectXMesh.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\UVAtlas\UVAtlas.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\meshoptimizer\meshoptimizer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\MikkTSpace\MikkTSpace.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\ModelTool\ModelTool.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\GraphicsDeviceNull\GraphicsDeviceNull.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\nvapi\nvapi.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\AGS\AGS.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\GraphicsDeviceDX11\GraphicsDeviceDX11.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\GraphicsDeviceDX12\GraphicsDeviceDX12.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\ShaderCompilerD3D\ShaderCompilerD3D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\ShaderCompilerDX\ShaderCompilerDX.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\glslang\glslang.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\spirv-tools\spirv-tools.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\ShaderCompilerVulkan\ShaderCompilerVulkan.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\ShaderCompilerWebGPU\ShaderCompilerWebGPU.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\ShadersCompilation\ShadersCompilation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Graphics\Graphics.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Utilities\Utilities.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Particles\Particles.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Visject\Visject.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\MaterialGenerator\MaterialGenerator.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\ContentImporters\ContentImporters.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\ContentExporters\ContentExporters.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Content\Content.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Renderer\Renderer.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\nethost\nethost.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Scripting\Scripting.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\rapidjson\rapidjson.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Serialization\Serialization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\CSG\CSG.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Level\Level.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\recastnavigation\recastnavigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Navigation\Navigation.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\AI\AI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Animations\Animations.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Audio\Audio.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Video\Video.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Foliage\Foliage.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\freetype\freetype.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\msdfgen\msdfgen.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Render2D\Render2D.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Input\Input.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Networking\Networking.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Streaming\Streaming.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Terrain\Terrain.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Threading\Threading.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Localization\Localization.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\UI\UI.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Online\Online.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Engine\Engine.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\pugixml\pugixml.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\curl\curl.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\ShadowsOfMordor\ShadowsOfMordor.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Editor\Editor.Bindings.Gen.cs" />
+    <Compile Visible="false" Include="D:\dev\FlaxEngine\Cache\Intermediate\FlaxTestsTarget\Windows\x64\Development\Tests\Tests.Bindings.Gen.cs" />
+  </ItemGroup>
+</Project>

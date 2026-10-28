@@ -1,0 +1,153 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Configurations>Debug</Configurations>
+    <Platforms>AnyCPU</Platforms>
+    <Configuration>Debug</Configuration>
+    <Platform>AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <RootNamespace>BuildScripts</RootNamespace>
+    <AssemblyName>BuildScripts.CSharp</AssemblyName>
+    <LangVersion>13.0</LangVersion>
+    <FileAlignment>512</FileAlignment>
+    <CustomAfterMicrosoftCommonTargets>$(MSBuildThisFileDirectory)Flax.Build.CSharp.SkipBuild.targets</CustomAfterMicrosoftCommonTargets>
+    <RestorePackages>false</RestorePackages>
+    <DisableFastUpToDateCheck>True</DisableFastUpToDateCheck>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Intermediate\Unused\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\Cache/Intermediate\BuildScripts\Windows\AnyCPU\Debug\CSharp\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>..\..\Cache/Intermediate\BuildScripts\Windows\AnyCPU\Debug\CSharp\</IntermediateOutputPath>
+    <DefineConstants></DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\Intermediate\Unused\BuildScripts.CSharp.xml</DocumentationFile>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <FlaxConfiguration>Debug</FlaxConfiguration>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Flax.Build">
+      <HintPath>..\..\Binaries\Tools\Flax.Build.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Source\FlaxEditor.Build.cs" />
+    <Compile Include="..\..\Source\FlaxGame.Build.cs" />
+    <Compile Include="..\..\Source\FlaxTests.Build.cs" />
+    <Compile Include="..\..\Source\Tools\Flax.Build\Flax.Build.Build.cs" />
+    <Compile Include="..\..\Source\Tools\Flax.Build.Tests\Flax.Build.Tests.Build.cs" />
+    <Compile Include="..\..\Source\Editor\Editor.Build.cs" />
+    <Compile Include="..\..\Source\Engine\AI\AI.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Animations\Animations.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Audio\Audio.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Content\Content.Build.cs" />
+    <Compile Include="..\..\Source\Engine\ContentExporters\ContentExporters.Build.cs" />
+    <Compile Include="..\..\Source\Engine\ContentImporters\ContentImporters.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Core\Core.Build.cs" />
+    <Compile Include="..\..\Source\Engine\CSG\CSG.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Debug\Debug.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Engine\Engine.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Foliage\Foliage.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Graphics\Graphics.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Input\Input.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Level\Level.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Localization\Localization.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Main\Main.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Navigation\Navigation.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Networking\Networking.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Online\Online.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Particles\Particles.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Physics\Physics.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Platform\Platform.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Profiler\Profiler.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Render2D\Render2D.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Renderer\Renderer.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Scripting\Scripting.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Serialization\Serialization.Build.cs" />
+    <Compile Include="..\..\Source\Engine\ShadersCompilation\ShadersCompilation.Build.cs" />
+    <Compile Include="..\..\Source\Engine\ShadowsOfMordor\ShadowsOfMordor.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Streaming\Streaming.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Terrain\Terrain.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Tests\Tests.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Threading\Threading.Build.cs" />
+    <Compile Include="..\..\Source\Engine\UI\UI.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Utilities\Utilities.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Video\Video.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Visject\Visject.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\AGS\AGS.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\assimp\assimp.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\astc\astc.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\basis_universal\basis_universal.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\bc7enc16\bc7enc16.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\catch2\catch2.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\curl\curl.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\ddspp\ddspp.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\detex\detex.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\DirectX12Agility\DirectX12Agility.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\DirectXMesh\DirectXMesh.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\DirectXTex\DirectXTex.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\enet\enet.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\FidelityFX\FidelityFX.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\fmt\fmt.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\freetype\freetype.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\glslang\glslang.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\libportal\libportal.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\LZ4\lz4.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\meshoptimizer\meshoptimizer.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\MikkTSpace\MikkTSpace.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\minimp3\minimp3.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\mono-2.0\mono.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\msdfgen\msdfgen.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\nethost\nethost.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\nvapi\nvapi.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\NvCloth\NvCloth.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\ogg\ogg.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\OpenFBX\OpenFBX.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\PhysX\PhysX.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\pugixml\pugixml.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\rapidjson\rapidjson.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\recastnavigation\recastnavigation.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\SDL\SDL.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\spirv-tools\spirv_tools.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\stb\stb.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\tinyexr\tinyexr.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\tracy\tracy.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\UniversalAnalytics\UniversalAnalytics.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\UVAtlas\UVAtlas.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\volk\volk.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\vorbis\vorbis.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\VulkanMemoryAllocator\VulkanMemoryAllocator.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\Wayland\Wayland.Build.cs" />
+    <Compile Include="..\..\Source\ThirdParty\WinPixEventRuntime\WinPixEventRuntime.Build.cs" />
+    <Compile Include="..\..\Source\Engine\GraphicsDevice\Null\GraphicsDeviceNull.Build.cs" />
+    <Compile Include="..\..\Source\Engine\GraphicsDevice\Vulkan\GraphicsDeviceVulkan.Build.cs" />
+    <Compile Include="..\..\Source\Engine\GraphicsDevice\WebGPU\GraphicsDeviceWebGPU.Build.cs" />
+    <Compile Include="..\..\Source\Engine\ShadersCompilation\DirectX\ShaderCompilerD3D.Build.cs" />
+    <Compile Include="..\..\Source\Engine\ShadersCompilation\DirectX\ShaderCompilerDX.Build.cs" />
+    <Compile Include="..\..\Source\Engine\ShadersCompilation\Vulkan\ShaderCompilerVulkan.Build.cs" />
+    <Compile Include="..\..\Source\Engine\ShadersCompilation\WebGPU\ShaderCompilerWebGPU.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Tools\AudioTool\AudioTool.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Tools\MaterialGenerator\MaterialGenerator.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Tools\ModelTool\ModelTool.Build.cs" />
+    <Compile Include="..\..\Source\Engine\Tools\TextureTool\TextureTool.Build.cs" />
+    <Compile Include="..\..\Source\Engine\GraphicsDevice\DirectX\DX11\GraphicsDeviceDX11.Build.cs" />
+    <Compile Include="..\..\Source\Engine\GraphicsDevice\DirectX\DX12\GraphicsDeviceDX12.Build.cs" />
+  </ItemGroup>
+</Project>
