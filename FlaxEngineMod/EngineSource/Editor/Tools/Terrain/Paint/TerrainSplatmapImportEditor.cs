@@ -19,6 +19,14 @@ namespace FlaxEditor.Tools.Terrain.Paint
             var button = row.Button("import...");
             button.Button.Width = 80;
             button.Button.Clicked += OnImportClicked;
+
+            var spacer = row.Custom<ContainerControl>();
+            spacer.CustomControl.Width = 30;
+            spacer.CustomControl.Height = 20;
+
+            var exportButton = row.Button("export...");
+            exportButton.Button.Width = 80;
+            exportButton.Button.Clicked += OnExportClicked;
         }
 
 
@@ -78,5 +86,63 @@ namespace FlaxEditor.Tools.Terrain.Paint
                     MessageBoxIcon.Error);
             }
         }
+
+
+        private void OnExportClicked()
+        {
+            SingleLayerMode owner = GetOwner();
+            if (owner == null) return;
+
+            string initialFolder = null;
+            if (!string.IsNullOrEmpty(owner.SplatmapImport) && System.IO.File.Exists(owner.SplatmapImport))
+                initialFolder = System.IO.Path.GetDirectoryName(owner.SplatmapImport);
+
+            const string filter = "Image files (*.bmp)\0*.bmp\0All files (*.*)\0*.*\0";
+
+            string[] paths;
+            if (FileSystem.ShowSaveFileDialog(
+                    Editor.Instance.Windows.MainWindow,
+                    initialFolder,
+                    filter,
+                    false,
+                    "Export single-channel splatmap",
+                    out paths))
+            {
+                return;
+            }
+
+            if (paths == null || paths.Length == 0) return;
+
+            string path = paths[0];
+            if (string.IsNullOrEmpty(path)) return;
+
+            // 如果路径没有扩展名，自动补上 .bmp
+            if (string.IsNullOrEmpty(System.IO.Path.GetExtension(path)))
+            {
+                path += ".bmp";
+            }
+
+            string error = TerrainSplatmapImporter.Export(owner, path);
+            if (!string.IsNullOrEmpty(error))
+            {
+                MessageBox.Show(
+                    Editor.Instance.Windows.MainWindow,
+                    "Export failed:\n" + error,
+                    "Splatmap Export Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show(
+                    Editor.Instance.Windows.MainWindow,
+                    "Splatmap exported successfully to:\n" + path,
+                    "Export Complete",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+        }
+
+
     }
 }

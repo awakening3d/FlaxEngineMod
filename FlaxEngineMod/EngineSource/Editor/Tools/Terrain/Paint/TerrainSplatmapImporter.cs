@@ -203,5 +203,133 @@ namespace FlaxEditor.Tools.Terrain.Paint
 
             return (Terrain)node.Actor;
         }
+
+
+        public static string Export(SingleLayerMode mode, string filePath)
+        {
+            var terrain = GetSelectedTerrain();
+            if (terrain == null)
+            {
+                LogError(filePath, "No terrain selected.");
+                return "No terrain selected.";
+            }
+
+            int targetLayer = (int)mode.Layer;
+            int heightmapSize = terrain.HeightmapSize;
+
+            int patchGridX = 1, patchGridZ = 1;
+            int patchCount = terrain.PatchesCount;
+            for (int i = 0; i < patchCount; i++)
+            {
+                terrain.GetPatchCoord(i, out var c);
+                if (c.X + 1 > patchGridX) patchGridX = c.X + 1;
+                if (c.Y + 1 > patchGridZ) patchGridZ = c.Y + 1;
+            }
+
+            int totalW = patchGridX * heightmapSize;
+            int totalH = patchGridZ * heightmapSize;
+            var fullImage = new byte[totalW * totalH];
+
+            int splatmapIndex = targetLayer < 4 ? 0 : 1;
+            int channelIndex = targetLayer % 4;
+
+            for (int p = 0; p < patchCount; p++)
+            {
+                terrain.GetPatchCoord(p, out var patchCoord);
+
+                unsafe
+                {
+                    Color32* existing = TerrainTools.GetSplatMapData(terrain, ref patchCoord, splatmapIndex);
+                    if (existing == null)
+                        return $"Failed to read splatmap for patch ({patchCoord.X},{patchCoord.Y})";
+
+                    int baseX = patchCoord.X * heightmapSize;
+                    int baseZ = patchCoord.Y * heightmapSize;
+
+                    for (int z = 0; z < heightmapSize; z++)
+                    {
+                        for (int x = 0; x < heightmapSize; x++)
+                        {
+                            var src = existing[z * heightmapSize + x];
+                            byte value = channelIndex switch
+                            {
+                                0 => src.R,
+                                1 => src.G,
+                                2 => src.B,
+                                _ => src.A
+                            };
+                            fullImage[(baseZ + z) * totalW + (baseX + x)] = value;
+                        }
+                    }
+                }
+            }
+
+            try
+            {
+                WriteBmp24Grayscale(filePath, fullImage, totalW, totalH);
+            }
+            catch (Exception ex)
+            {
+                LogError(filePath, ex.Message);
+                return ex.Message;
+            }
+
+            Debug.Log($"[SplatmapExport] Success: Layer {targetLayer} -> '{System.IO.Path.GetFileName(filePath)}' ({totalW}x{totalH})");
+            return null;
+        }
+
+        private static void WriteBmp24Grayscale(string path, byte[] gray, int width, int height)
+        {
+            // 24bpp BMP row stride: each row padded to 4-byte boundary
+            int rowSize = width * 3;
+            int rowStride = (rowSize + 3) & ~3;
+            int pixelDataSize = rowStride * height;
+            int headerSize = 14 + 40;
+            int fileSize = headerSize + pixelDataSize;
+
+            using (var fs = new System.IO.FileStream(path, System.IO.FileMode.Create))
+            using (var bw = new System.IO.BinaryWriter(fs))
+            {
+                // BITMAPFILEHEADER
+                bw.Write((byte)'B');
+                bw.Write((byte)'M');
+                bw.Write(fileSize);
+                bw.Write((ushort)0);
+                bw.Write((ushort)0);
+                bw.Write(headerSize);
+
+                // BITMAPINFOHEADER
+                bw.Write(40);
+                bw.Write(width);
+                bw.Write(height);       // positive = bottom-up
+                bw.Write((ushort)1);
+                bw.Write((ushort)24);
+                bw.Write(0);
+                bw.Write(pixelDataSize);
+                bw.Write(2835);
+                bw.Write(2835);
+                bw.Write(0);
+                bw.Write(0);
+
+                // Pixel data, bottom-up, BGR order
+                var rowBuf = new byte[rowStride];
+                for (int y = height - 1; y >= 0; y--)
+                {
+                    System.Array.Clear(rowBuf, 0, rowStride);
+                    for (int x = 0; x < width; x++)
+                    {
+                        byte v = gray[y * width + x];
+                        rowBuf[x * 3 + 0] = v;
+                        rowBuf[x * 3 + 1] = v;
+                        rowBuf[x * 3 + 2] = v;
+                    }
+                    bw.Write(rowBuf);
+                }
+            }
+        }
+
+
+
+
     }
 }
