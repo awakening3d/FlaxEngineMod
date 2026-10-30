@@ -205,6 +205,32 @@ namespace FlaxEditor.Tools.Terrain.Paint
         }
 
 
+        // NOTE: Round-trip precision and bilinear sampling
+        //
+        // The importer uses bilinear sampling to map the exported image back onto
+        // each terrain patch. For a patch (px, pz), pixel (x, z), the importer
+        // computes:
+        //     fx = (px + x / (H - 1)) / gridX * (totalW - 1)
+        //     fy = (pz + z / (H - 1)) / gridZ * (totalH - 1)
+        //
+        // To guarantee that fx and fy land exactly on the intended integer pixel,
+        // the export size must be:
+        //     totalW = gridX * (H - 1) + 1
+        //     totalH = gridZ * (H - 1) + 1
+        // (e.g. 4 * 508 + 1 = 2033), not gridX * H = 2036.
+        //
+        // Even with this exact sizing, fx and fy may carry 1-ULP floating point
+        // error, so bilinear sampling can occasionally read a neighbour pixel
+        // with a tiny weight. This results in a +/-1 difference in the recovered
+        // 8-bit value after export -> import -> export.
+        //
+        // This +/-1 drift is expected and harmless for splatmap data. We do NOT
+        // attempt to invert bilinear sampling on export, because the correction
+        // would depend on platform-specific FP behavior and could corrupt
+        // neighbouring pixels at patch boundaries.
+        //
+        // If strict bit-exact round-trip is ever required, the importer must
+        // switch to nearest-neighbour sampling instead of bilinear.
         public static string Export(SingleLayerMode mode, string filePath)
         {
             var terrain = GetSelectedTerrain();
@@ -215,7 +241,7 @@ namespace FlaxEditor.Tools.Terrain.Paint
             }
 
             int targetLayer = (int)mode.Layer;
-            int heightmapSize = terrain.HeightmapSize;
+            int H = terrain.HeightmapSize;
 
             int patchGridX = 1, patchGridZ = 1;
             int patchCount = terrain.PatchesCount;
@@ -226,8 +252,13 @@ namespace FlaxEditor.Tools.Terrain.Paint
                 if (c.Y + 1 > patchGridZ) patchGridZ = c.Y + 1;
             }
 
-            int totalW = patchGridX * heightmapSize;
-            int totalH = patchGridZ * heightmapSize;
+            // Match the importer's UV normalization: total size = grid * (H - 1) + 1
+            // so outX = px * (H - 1) + x exactly maps to importer's fx = u * (totalW - 1)
+            // total size = grid * (H - 1) + 1, e.g. 4 * 508 + 1 = 2033
+            // This matches the importer's UV normalization (fx = u * (totalW - 1)).
+            // Do NOT round up to 2036 or 2048, as it would break the 1:1 round-trip.
+            int totalW = patchGridX * (H - 1) + 1;
+            int totalH = patchGridZ * (H - 1) + 1;
             var fullImage = new byte[totalW * totalH];
 
             int splatmapIndex = targetLayer < 4 ? 0 : 1;
@@ -243,14 +274,22 @@ namespace FlaxEditor.Tools.Terrain.Paint
                     if (existing == null)
                         return $"Failed to read splatmap for patch ({patchCoord.X},{patchCoord.Y})";
 
-                    int baseX = patchCoord.X * heightmapSize;
-                    int baseZ = patchCoord.Y * heightmapSize;
+                    int baseX = patchCoord.X * (H - 1);
+                    int baseZ = patchCoord.Y * (H - 1);
 
-                    for (int z = 0; z < heightmapSize; z++)
+                    for (int z = 0; z < H; z++)
                     {
-                        for (int x = 0; x < heightmapSize; x++)
+                        // Skip bottom boundary of this patch (shared with next patch's z=0)
+                        if (z == H - 1 && patchCoord.Y < patchGridZ - 1)
+                            continue;
+
+                        for (int x = 0; x < H; x++)
                         {
-                            var src = existing[z * heightmapSize + x];
+                            // Skip right boundary of this patch (shared with next patch's x=0)
+                            if (x == H - 1 && patchCoord.X < patchGridX - 1)
+                                continue;
+
+                            var src = existing[z * H + x];
                             byte value = channelIndex switch
                             {
                                 0 => src.R,

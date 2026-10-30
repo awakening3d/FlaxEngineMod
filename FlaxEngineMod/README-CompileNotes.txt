@@ -462,6 +462,14 @@ Flax 引擎源码修改记录
 1. Source\Editor\Tools\Terrain\Paint\TerrainSplatmapImportEditor.cs
 2. Source\Editor\Tools\Terrain\Paint\TerrainSplatmapImporter.cs
 -------------------------------------------------------------------------------------------------------
+=================================================================================
+Flax 引擎源码修改记录
+日期: 2026-10-30
+描述: splatmap导出数据一致性修改，导出再导入像素位置一致，精度稍微有差异
+-------------------------------------------------------------------------------------------------------
+1. Source\Editor\Tools\Terrain\Paint\TerrainSplatmapImportEditor.cs
+2. Source\Editor\Tools\Terrain\Paint\TerrainSplatmapImporter.cs
+-------------------------------------------------------------------------------------------------------
 
 
 

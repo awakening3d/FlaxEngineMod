@@ -55,7 +55,7 @@ namespace FlaxEditor.Tools.Terrain.Paint
             if (!string.IsNullOrEmpty(owner.SplatmapImport) && System.IO.File.Exists(owner.SplatmapImport))
                 initialFolder = System.IO.Path.GetDirectoryName(owner.SplatmapImport);
 
-            const string filter = "Image files (*.png;*.tga;*.raw;*.exr)\0*.png;*.tga;*.raw;*.exr\0All files (*.*)\0*.*\0";
+            const string filter = "Image files (*.png;*.tga;*.raw;*.exr;*.bmp)\0*.png;*.tga;*.raw;*.exr;*.bmp\0All files (*.*)\0*.*\0";
 
             // 返回值 true = 取消，false = 成功
             if (FileSystem.ShowOpenFileDialog(
