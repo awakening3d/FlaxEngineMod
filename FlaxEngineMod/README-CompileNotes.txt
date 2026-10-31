@@ -472,5 +472,119 @@ Flax 引擎源码修改记录
 -------------------------------------------------------------------------------------------------------
 
 
+=============================================================================
+Flax 引擎功能扩展记录：具名变量节点（Named Variable）
+日期：2026-10-31
+描述：实现材质图中的具名变量系统，用于替代长距离连线，支持一处赋值、多处引用，并在材质生成阶段自动短路求值。
+-------------------------------------------------------------------------------------------------------
+1. Source/Editor/Surface/Archetypes/NamedVariable.cs
+2. Source/Editor/Surface/NodeFactory.cs
+3. Source/Editor/Surface/ResizableSurfaceNode.cs
+4. Source/Engine/Visject/ShaderGraph.h
+5. Source/Engine/Visject/ShaderGraph.cpp
+
+------------------------------------------------------------------------------------------------------
+1. 功能概述
+------------------------------------------------------------------------------------------------------
+在材质图中新增两种节点：
+- Set Named Variable：接收一个输入值，并赋予唯一名字。
+- Get Named Variable：通过下拉框选择名字，输出对应 Set 节点的值。
+
+用户在图中仅通过名字关联，不显示实际连线。材质生成时，C++ 层将 Get 节点的求值短路到同名 Set 节点的输入源，不产生额外的代码或连线，保证性能与图面整洁。
+
+------------------------------------------------------------------------------------------------------
+2. 修改文件清单
+------------------------------------------------------------------------------------------------------
+
+[2.1] Source/Editor/Surface/Archetypes/NamedVariable.cs
+说明：C# 编辑器层节点定义与交互逻辑。
+改动：
+- 注册 Set（TypeID 1）与 Get（TypeID 2）两种 NodeArchetype，GroupID 为 20。
+- Set 节点：文本框输入名字，EditEnd 时提交；重名校验；改名时广播给所有 Get 节点同步。
+- Get 节点：继承 ResizableSurfaceNode，支持水平拉伸；下拉框动态刷新；类型跟随 Set 输入 Box 实时同步。
+- Set 节点改名时禁用 Undo 内部记录，并在操作结束后压入 EmptyUndoAction，避免 Undo 栈污染。
+- Get 节点在切换下拉框时同样禁用 Undo 记录。
+- 粘贴 Set 节点时，若名字冲突，自动追加 _1、_2 等后缀直到唯一。
+- 输出类型同步：Get 节点的 OutputBox 类型由 Set 节点输入 Box 的连接类型决定；Set 的 ConnectionTick 会通知所有 Get 节点刷新类型。
+
+[2.2] Source/Editor/Surface/NodeFactory.cs
+说明：节点工厂注册。
+改动：
+- 在 DefaultGroups 末尾新增 GroupArchetype，GroupID = 20，Name = "Named Variables"。
+- Archetypes 指向 NamedVariable.Nodes。
+
+[2.3] Source/Engine/Visject/ShaderGraph.h
+说明：ShaderGenerator 声明。
+改动：
+- 在 ProcessGroup* 声明列表中新增 ProcessGroupNamedVariable。
+- 将 _perGroupProcessCall 类型从 FixedAllocation<17> 改为 FixedAllocation<32>，为后续扩展保留容量。
+- 注意：FixedAllocation 是固定容量内联数组，原容量 17 无法容纳 GroupID 20，Resize(21) 在 Release 下会被静默截断为 17，导致越界访问空函数指针而崩溃。
+
+[2.4] Source/Engine/Visject/ShaderGraph.cpp
+说明：ShaderGenerator 实现。
+改动：
+- 构造函数中 Resize(17) 改为 Resize(21)。
+- 注册 _perGroupProcessCall[20] 到 ProcessGroupNamedVariable。
+- 新增 ProcessGroupNamedVariable 实现：
+  - Set 节点：返回 Value::Zero（无输出）。
+  - Get 节点：读取 Values[0].ToString() 作为变量名，在当前图的 Nodes 中查找同名 Set 节点。
+  - 找到后取出 Set 节点的输入 Box（ID 0），若已连接则调用 eatBox 对上游求值。
+  - eatBox 自带 Box 缓存，多个 Get 节点绑定同一 Set 时上游只求值一次，不会产生代码重复。
+  - 找不到 Set 时通过 OnError 报错并返回 Value::Zero，防止崩溃。
+
+------------------------------------------------------------------------------------------------------
+3. 关键设计说明
+------------------------------------------------------------------------------------------------------
+
+[3.1] 图级别短路求值
+Get 节点不生成任何 HLSL 代码。材质编译时，ProcessGroupNamedVariable 将 Get 节点替换为对 Set 节点输入的求值结果，等价于把 Get 的输出直接连到 Set 的输入源。用户图中仍保持无连线状态，生成结果与直接连线完全一致。
+
+[3.2] 求值缓存
+ShaderGenerator::eatBox 会对每个 Box 的求值结果缓存到 box->Cache。多个 Get 节点引用同一个 Set 时，上游函数的 HLSL 代码只会生成一次，下游共享同一个临时变量。
+
+[3.3] 类型同步
+Get 节点的 OutputBox 类型由 Set 节点输入 Box 的当前类型决定。Set 的 ConnectionTick 触发时，会遍历所有 Get 节点调用 UpdateOutputType，保证类型校验和连线时不会因类型不一致或空类型导致崩溃。
+
+[3.4] Undo 策略
+具名变量的改名和内部切换属于联动操作，不纳入 Undo 栈。Set 改名时临时禁用 Undo 记录，操作完成后压入 EmptyUndoAction 占位，避免用户按 Ctrl+Z 时撤销到不一致的中间状态。
+
+[3.5] 唯一性校验
+Set 节点改名时检查是否存在同名 Set，冲突则拒绝修改并回退到旧名字，同时输出警告日志。粘贴时若名字冲突，自动追加数字后缀直到唯一。
+
+------------------------------------------------------------------------------------------------------
+4. 调试经验记录
+------------------------------------------------------------------------------------------------------
+
+[4.1] 崩溃 0xC0000005 访问冲突于 0x0
+原因：FixedAllocation<17> 容量不足以容纳 GroupID 20，Resize(21) 在 Release 下被截断为 17，_perGroupProcessCall[20] 越界读到空函数指针并被调用。
+修复：将 FixedAllocation<17> 改为 FixedAllocation<32>，并确保 Resize(21)。
+
+[4.2] 材质编译时 GroupID 20 未知导致崩溃
+原因：ShaderGenerator 的 _perGroupProcessCall 未注册 GroupID 20 的处理函数。
+修复：在 ShaderGenerator 构造函数中注册 ProcessGroupNamedVariable。
+
+[4.3] C2440 无法从 T 转换为 String
+原因：Variant 没有 AsString 方法，且不能隐式转换为 String。
+修复：使用 Variant::ToString() 获取字符串。
+
+[4.4] 节点拉伸时下拉框宽度不跟随
+原因：未在 SizeChanged 中同步 ComboBox 宽度。
+修复：重写 OnSizeChanged，按节点宽度设置 _combobox.Width。
+
+[4.5] 节点改名导致 Get 节点选中项丢失
+原因：Set 改名广播顺序错误，Get 节点在旧名字失效时被置空。
+修复：在 Set 的 OnValuesChanged 中先广播 OnSetRenamed(oldName, newName)，再刷新下拉框。
+
+[4.6] Set 改名卡顿
+原因：TextBox.TextChanged 每次按键触发全图刷新。
+修复：改用 TextBox.EditEnd 事件，仅在失焦或回车时提交。
+
+============================================================
+5. 后续可扩展方向
+============================================================
+- 支持跨层（Material Function 内部）的具名变量查找。
+- 支持具名变量的默认值（Set 未连接时输出默认值）。
+- 支持在 Visual Script 图和其他 Visject 图中复用同一套节点。
+- 将命名变量存储为材质参数，实现运行时动态修改。
 
 
