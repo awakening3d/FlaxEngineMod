@@ -588,3 +588,113 @@ Set 节点改名时检查是否存在同名 Set，冲突则拒绝修改并回退
 - 将命名变量存储为材质参数，实现运行时动态修改。
 
 
+
+===========================================================
+Flax 引擎与编辑器改动总结
+日期：2026-11-01
+-----------------------------------------------------------------------------------------------------
+1. Source/Editor/Surface/Archetypes/NamedVariable.cs
+
+-----------------------------------------------------------------------------------------------------
+1. 材质节点图具名变量系统（Named Variable）后续完善
+
+[1.1] 修复删除 Set 节点后 Get 节点下拉框未刷新
+文件：Source/Editor/Surface/Archetypes/NamedVariable.cs
+说明：
+- 在 NamedVariableSetNode 中重写 OnDeleted。
+- 当 Set 节点被删除时，遍历图中的所有 Get 节点。
+- 直接调用 Get 节点的 UpdateCombo(deletedName)，将即将消失的名字作为过滤参数传入，使 Get 节点立即感知名字失效并置空。
+
+[1.2] 支持 Undo 恢复 Set 节点后 Get 节点自动重连
+文件：Source/Editor/Surface/Archetypes/NamedVariable.cs
+说明：
+- 在 NamedVariableSetNode 中重写 OnLoaded 和 OnSpawned。
+- 当 Set 节点从文件加载或被 Undo 恢复时，主动遍历所有 Get 节点并调用 UpdateCombo()。
+- Get 节点重新扫描当前图，找到恢复后的 Set 节点名字，自动恢复选中状态，实现状态一致性闭环。
+
+[1.3] GetAllSetNames 增加忽略参数
+文件：Source/Editor/Surface/Archetypes/NamedVariable.cs
+说明：
+- 修改 NamedVariable.GetAllSetNames，增加可选参数 ignoredName。
+- 遍历节点收集名字时，跳过与 ignoredName 匹配的 Set 节点。
+- 用于在 Set 删除瞬间过滤“幽灵节点”，避免 Get 节点误认为名字仍然存在。
+
+----------------------------------------------------------------------------------
+NamedVariable 模块状态说明
+----------------------------------------------------------------------------------
+
+文件: Source/Editor/Surface/Archetypes/NamedVariable.cs
+状态: 功能可用, 暂时冻结 (不轻易改动 Undo 逻辑, 避免引入新 bug)
+
+一, 设计概要
+------------
+1. Set 节点是命名变量的唯一数据源.
+2. Get 节点通过名字查找 Set 节点, 同步输出类型和下拉列表.
+3. 数据优先: 节点 Values[] 是真相, UI (TextBox / ComboBox) 跟随数据.
+4. 三条广播路径:
+   (1) Set 改名 -> OnSetRenamed 通知所有 Get.
+   (2) Set 删除 -> UpdateCombo(deletedName) 通知所有 Get (清空选择).
+   (3) Set 输入连接变化 -> UpdateOutputType 通知所有 Get.
+
+二, 当前行为说明
+----------------
+1. 删除 Set 会清空匹配的 Get 选择 (UpdateCombo 带 ignoredName).
+2. 撤销该删除会同时还原 Set 节点和 Get 节点的 Values[0], 于是 Get 自动重新选回被恢复的 Set.
+   这是"数据优先 + Undo 还原"的必然结果, 本身不算 bug, 但暴露了下面的 Undo 不统一问题.
+
+三, 已知隐患 (按优先级)
+-----------------------
+[P0] 删除路径 Undo 不统一
+  OnDeleted -> UpdateCombo(deletedName) -> VariableName = string.Empty -> SetValue,
+  未包 undo.Enabled = false, 而 OnTextBoxEditEnd 和 OnSelectedChanged 都包了.
+  因此"删除"会在 Undo 栈里多留一条 EditNodeValuesAction.
+  若 Surface.AddBatchedUndoAction 未把它与节点删除合并成单步,
+  撤销可能只还原一半状态 (Set 回来但 Get 空着, 或 Get 选回但 Set 没回来).
+
+[P0] 重复名只在编辑框路径硬拒
+  OnTextBoxEditEnd 检测重名会 revert.
+  但 OnValuesChanged (Undo 恢复, 代码 SetValue, OnSetRenamed 广播可达) 只 LogError 仍提交
+  _lastCommittedName = newName.
+  同名 Set 会导致 FindSetNode 返回第一个匹配 (Get 类型可能绑错),
+  ComboBox 出现重复项, GetAllSetNames / UpdateCombo 语义歧义.
+
+[P1] UpdateCombo 隐式改数据
+  UpdateCombo 名义上是刷新 UI, 但当 currentName 不在候选集时执行 VariableName = string.Empty,
+  带 SetValue 副作用 (压 Undo, MarkAsEdited, UpdateSize).
+  不同调用点 (删除 / 加载 / 生成) 因 Undo 状态不同而行为不同.
+
+[P2] ConnectionTick 全图广播
+  任意 Set 的任意连接变化都会遍历全部节点刷新所有 Get 的 UpdateOutputType, 大图下 O(N^2).
+  未按名字过滤, 功能正确但浪费.
+
+[P2] _combobox / _textBox 获取时机依赖
+  OnLoaded 依赖 GetChild<ComboBoxElement>() / Children 中已有控件.
+  若调用顺序变化, UpdateCombo 的 if (_combobox != null) 会静默跳过 UI 刷新,
+  表现为"加载后下拉框空但数据有值".
+
+[P3] OnSetRenamed 与 OnValuesChanged 的锁交互
+  OnSetRenamed 里 _isUpdateLocked = true 期间 VariableName = newName 仍走
+  SetValue -> OnValuesChanged.
+  重入目前靠 _isUpdateLocked 和 _isDuringValuesEditing 挡住, 但仅因当前无嵌套 SetValue,
+  属"靠没有嵌套"而非机制保证, 较脆弱.
+
+[P3] OnPasted 的 _textBox 可能为 null
+  VariableName = newName 触发 OnValuesChanged 同步 _textBox.Text (非 null 时),
+  随后又手动设一次, 重复无害.
+  若 OnPasted 早于 OnLoaded, _textBox 为 null; OnLoaded 之后从 VariableName 补齐,
+  一致性能保证但依赖调用顺序.
+
+[P3] EmptyUndoAction 语义怪异
+  重命名时禁用内部 Undo 再手动压一个空动作.
+  用户表现为"撤销重命名无可见变化, 再撤一次才回到重命名前",
+  与"删除可撤销"不一致, 可能困惑.
+
+四, 建议修复顺序 (将来动 Undo 时)
+--------------------------------
+1. P0: 统一删除路径的 Undo 处理 (广播包 undo.Enabled = false, 或确认 AddBatchedUndoAction 合并单步).
+2. P0: 让 OnValuesChanged 真正 revert 重复名 (或拒绝提交), 而不只是打日志.
+3. P1: 拆分 UpdateCombo 为"只刷新 UI"与"显式改数据", 数据修改走 Undo 控制.
+4. P2: ConnectionTick 按名字过滤, 避免全图扫描.
+5. P2: 确认 OnLoaded 在元素创建后调用, 避免静默跳过.
+
+

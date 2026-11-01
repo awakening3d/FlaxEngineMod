@@ -69,9 +69,9 @@ namespace FlaxEditor.Surface.Archetypes
         };
 
         /// <summary>
-        /// Gets all unique set variable names from the surface.
+        /// Gets all set variable names from the surface.
         /// </summary>
-        public static List<string> GetAllSetNames(VisjectSurfaceContext context)
+        public static List<string> GetAllSetNames(VisjectSurfaceContext context, string ignoredName = null)
         {
             var result = new List<string>();
             if (context == null) return result;
@@ -80,11 +80,17 @@ namespace FlaxEditor.Surface.Archetypes
             {
                 if (node is NamedVariableSetNode setNode && !string.IsNullOrEmpty(setNode.VariableName))
                 {
+                    // Skip the node if its name matches the ignored one
+                    if (ignoredName != null && setNode.VariableName == ignoredName)
+                        continue;
+
                     result.Add(setNode.VariableName);
                 }
             }
             return result;
         }
+
+
     }
 
     /// <summary>
@@ -122,27 +128,6 @@ namespace FlaxEditor.Surface.Archetypes
             : base(id, context, arch, groupArch)
         {
             _lastCommittedName = VariableName;
-        }
-
-        public override void OnLoaded(SurfaceNodeActions action)
-        {
-            base.OnLoaded(action);
-
-            _lastCommittedName = VariableName;
-
-            if (_textBox == null)
-            {
-                for (int i = 0; i < Children.Count; i++)
-                {
-                    if (Children[i] is TextBox tb)
-                    {
-                        _textBox = tb;
-                        _textBox.Text = VariableName;
-                        _textBox.EditEnd += OnTextBoxEditEnd;
-                        break;
-                    }
-                }
-            }
         }
 
         private void OnTextBoxEditEnd()
@@ -219,7 +204,6 @@ namespace FlaxEditor.Surface.Archetypes
             if (Surface == null) return;
 
             string newName = VariableName;
-            string oldName = _lastCommittedName;
 
             if (_textBox != null && _textBox.Text != newName)
             {
@@ -241,10 +225,83 @@ namespace FlaxEditor.Surface.Archetypes
             }
             if (isDuplicate)
             {
-                Editor.LogWarning($"[NamedVariable] Duplicate variable name '{newName}'. Names must be unique.");
+                // Error (not Warning) because this path is reachable via Undo restore, code-driven SetValue,
+                // or OnSetRenamed broadcast - none of which hard-reject duplicates (only OnTextBoxEditEnd reverts).
+                // Duplicate names break FindSetNode (returns first match -> Get may bind to the wrong Set's type),
+                // produce duplicate ComboBox entries, and make GetAllSetNames/UpdateCombo ambiguous.
+                // We log but do not revert here to avoid mutating values inside OnValuesChanged (would recurse / corrupt Undo).
+                Editor.LogError($"[NamedVariable] Duplicate variable name '{newName}'. Names must be unique.");
             }
 
             _lastCommittedName = newName;
+        }
+
+        public override void OnDeleted(SurfaceNodeActions action)
+        {
+            string deletedName = VariableName;
+
+            base.OnDeleted(action);
+            // notify all Get nodes to clear their selection if they match the deleted name
+            if (Surface != null && !string.IsNullOrEmpty(deletedName))
+            {
+                foreach (var node in Surface.Nodes)
+                {
+                    if (node is NamedVariableGetNode getNode)
+                    {
+                        getNode.UpdateCombo(deletedName);
+                    }
+                }
+            }
+        }
+
+        public override void OnLoaded(SurfaceNodeActions action)
+        {
+            base.OnLoaded(action);
+
+            _lastCommittedName = VariableName;
+
+            if (_textBox == null)
+            {
+                for (int i = 0; i < Children.Count; i++)
+                {
+                    if (Children[i] is TextBox tb)
+                    {
+                        _textBox = tb;
+                        _textBox.Text = VariableName;
+                        _textBox.EditEnd += OnTextBoxEditEnd;
+                        break;
+                    }
+                }
+            }
+
+            // 恢复/加载时,通知所有 Get 节点刷新
+            if (Surface != null)
+            {
+                foreach (var node in Surface.Nodes)
+                {
+                    if (node is NamedVariableGetNode getNode)
+                    {
+                        getNode.UpdateCombo();
+                    }
+                }
+            }
+        }
+
+        public override void OnSpawned(SurfaceNodeActions action)
+        {
+            base.OnSpawned(action);
+
+            // 新建时,通知所有 Get 节点刷新
+            if (Surface != null)
+            {
+                foreach (var node in Surface.Nodes)
+                {
+                    if (node is NamedVariableGetNode getNode)
+                    {
+                        getNode.UpdateCombo();
+                    }
+                }
+            }
         }
 
         public override void ConnectionTick(Box box)
@@ -379,7 +436,8 @@ namespace FlaxEditor.Surface.Archetypes
             UpdateCombo();
         }
 
-        public void UpdateCombo()
+
+        public void UpdateCombo(string ignoredName = null)
         {
             if (_isUpdateLocked || Surface == null) return;
 
@@ -397,7 +455,8 @@ namespace FlaxEditor.Surface.Archetypes
             if (_combobox != null)
             {
                 string currentName = VariableName;
-                var names = NamedVariable.GetAllSetNames(Context);
+                // Pass the ignoredName down to exclude the deleted Set node
+                var names = NamedVariable.GetAllSetNames(Context, ignoredName);
 
                 _combobox.ClearItems();
                 for (int i = 0; i < names.Count; i++)
@@ -418,9 +477,9 @@ namespace FlaxEditor.Surface.Archetypes
 
             _isUpdateLocked = false;
 
-            // Sync output box type after combobox refresh
             UpdateOutputType();
         }
+
 
         private void OnSelectedChanged(ComboBox cb)
         {
