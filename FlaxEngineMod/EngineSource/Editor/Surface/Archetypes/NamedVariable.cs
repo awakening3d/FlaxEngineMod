@@ -248,7 +248,7 @@ namespace FlaxEditor.Surface.Archetypes
                 {
                     if (node is NamedVariableGetNode getNode)
                     {
-                        getNode.UpdateCombo(deletedName);
+                        getNode.UpdateCombo(deletedName,true);
                     }
                 }
             }
@@ -437,7 +437,7 @@ namespace FlaxEditor.Surface.Archetypes
         }
 
 
-        public void UpdateCombo(string ignoredName = null)
+        public void UpdateCombo(string ignoredName = null, bool allowClear = false)
         {
             if (_isUpdateLocked || Surface == null) return;
 
@@ -471,7 +471,11 @@ namespace FlaxEditor.Surface.Archetypes
                 else
                 {
                     _combobox.SelectedItem = null;
-                    VariableName = string.Empty;
+                    // 只有在明确允许的情况下，才清空底层数据
+                    if (allowClear)
+                    {
+                        VariableName = string.Empty;
+                    }
                 }
             }
 

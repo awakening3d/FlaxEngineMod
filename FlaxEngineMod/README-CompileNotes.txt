@@ -698,3 +698,97 @@ NamedVariable 模块状态说明
 5. P2: 确认 OnLoaded 在元素创建后调用, 避免静默跳过.
 
 
+
+===========================================================
+Flax 引擎与编辑器改动总结
+日期：2026-11-03
+-----------------------------------------------------------------------------------------------------
+1. Source/Editor/Surface/Archetypes/NamedVariable.cs
+2. Source/Editor/GUI/Dialogs/ColorSelector.cs
+
+1. NamedVariable - 修复重新打开材质后 Get 节点变量名丢失
+--------------------------------------------------------
+文件: NamedVariable.cs
+
+问题:
+  材质保存后重新打开, 某个 Get 节点有时会丢失已选的变量名 (Values[0] 被清空),
+  即使对应的 Set 节点存在也找不回来。只有部分 Get 节点受影响。
+
+根因:
+  加载时, NamedVariableGetNode.OnLoaded 会调用 UpdateCombo() 重建下拉列表。
+  如果某个 Get 节点比它依赖的 Set 节点先加载 (Surface.Nodes 的顺序不保证),
+  此时目标名字不在候选列表里。旧版 UpdateCombo 会无条件走 else 分支:
+      _combobox.SelectedItem = null;
+      VariableName = string.Empty;   // 加载期间破坏性写入
+  在 Set 节点还没加载出来前, 就把 Get 节点的数据清空了。
+  等 Set 节点加载完再广播刷新, 名字已经没了。
+
+修复:
+  给 UpdateCombo 增加 allowClear 参数, 只有调用方明确允许时才清空底层数据。
+
+  签名:
+      public void UpdateCombo(string ignoredName = null, bool allowClear = false)
+
+  逻辑:
+      if (!string.IsNullOrEmpty(currentName) && names.Contains(currentName))
+          _combobox.SelectedItem = currentName;
+      else
+      {
+          _combobox.SelectedItem = null;
+          if (allowClear)
+              VariableName = string.Empty;   // 仅在明确允许时清空
+      }
+
+  调用点:
+      - NamedVariableSetNode.OnDeleted -> UpdateCombo(deletedName, true)
+        (Set 已删除, 清空匹配的 Get 是预期行为)
+      - NamedVariableGetNode.OnLoaded  -> UpdateCombo()
+        (allowClear = false, 保留数据, 等待 Set 加载)
+      - NamedVariableSetNode.OnLoaded / OnSpawned 广播 -> UpdateCombo()
+        (allowClear = false)
+      - NamedVariableGetNode.OnSetRenamed -> UpdateCombo()
+        (allowClear = false)
+
+结果:
+  无论节点加载顺序如何, Get 节点都不会再丢失已选变量名。
+  删除路径仍然按预期清空匹配的 Get 选择。
+
+
+2. ColorSelector - 修复松手时光标跳到屏幕左上角
+------------------------------------------------
+文件: ColorSelector.cs
+
+问题:
+  在色轮或明度/透明度滑块上拖动并松开鼠标左键后, 光标会跳到屏幕左上角 (0, 0)。
+
+根因:
+  ColorSelector 和 ColorSelectorWithSliders 的 OnMouseUp 里强行设置了光标位置:
+      Root.MousePosition = dragRect.Center + MouseCursorOffset;
+  以及
+      Root.MousePosition = new Float2(sliderCenter + MouseCursorOffset,
+                                      Mathf.Clamp(...));
+  Root.MousePosition 期望的是屏幕坐标, 但传入的是控件局部坐标。
+  坐标系统不匹配导致光标被放到接近全局原点的位置。
+
+修复:
+  注释掉这两处 Root.MousePosition 赋值:
+      // Root.MousePosition = dragRect.Center + MouseCursorOffset;
+      // Root.MousePosition = new Float2(sliderCenter + MouseCursorOffset, ...);
+  保留其余松手逻辑 (还原 Cursor 为 Default, 清除滑动标志, EndMouseCapture,
+  EndSliding) 不变。
+
+取舍:
+  移除了原有的"松手时光标吸附回把手"行为。光标停留在用户松开鼠标的位置,
+  符合大多数用户的预期。
+
+受影响位置:
+  - ColorSelector.OnMouseUp            (色轮松手)
+  - ColorSelectorWithSliders.OnMouseUp (明度滑块 / 透明度滑块松手)
+
+
+3. 备注
+-------
+  - 两处修复都是最小改动, 不触碰无关逻辑。
+  - NamedVariable 的修复只放宽了加载路径, 删除路径行为保持不变。
+  - ColorSelector 的修复只移除错误的光标重定位, 拖拽、绘制、数值更新逻辑均未改动。
+
