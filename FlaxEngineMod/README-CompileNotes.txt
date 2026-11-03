@@ -792,3 +792,42 @@ Flax 引擎与编辑器改动总结
   - NamedVariable 的修复只放宽了加载路径, 删除路径行为保持不变。
   - ColorSelector 的修复只移除错误的光标重定位, 拖拽、绘制、数值更新逻辑均未改动。
 
+改动记录 - Flax 编辑器视口 Debug 绘制修复
+==================================================
+
+日期: 2026-11-04
+修改文件:
+  - Source/Editor/Viewport/MainEditorGizmoViewport.cs
+
+
+问题描述
+--------
+场景中放置了 PostFxVolume (后处理体积) 后, 即使该体积没有被选中,
+编辑器视口也会一直绘制它的包围盒线框。该线框在调色、光照调试时严重干扰视觉。
+
+在 MainEditorGizmoViewport.cs 的 DrawEditorPrimitives 中定位到根源:
+       _debugDrawData.DrawActors(true);
+   该调用传入 true, 会连同当前场景中所有加载的 Actor 一并交给底层
+   DebugDraw 渲染, 导致未选中的 PostFxVolume 也会被底层强行画出包围盒。
+
+修复内容
+--------
+文件: MainEditorGizmoViewport.cs
+方法: DrawEditorPrimitives
+
+_debugDrawData.DrawActors(true);
+改为
+_debugDrawData.DrawActors(false);
+
+说明:
+    将 DrawActors 的 drawScenes 参数由 true 改为 false。
+    这样 DebugDraw 只渲染 _debugDrawData 中收集到的 Actor
+    (即在 OnBegin 中从 TransformGizmo.SelectedParents 收集的选中对象),
+    不再遍历整个场景中的全部 Actor。
+
+
+修复效果
+--------
+- 未选中的 PostFxVolume 不再显示包围盒。
+- 选中 PostFxVolume 时仍正常显示包围盒。
+- 附带性能收益: 不再每帧遍历全场景 Actor 进行 Debug 绘制。
