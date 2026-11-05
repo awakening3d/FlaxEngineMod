@@ -63,7 +63,10 @@ namespace FlaxEditor.Tools.Terrain.Paint
         [EditorOrder(10), Tooltip("The layer to paint on. Terrain material can access a per-layer blend weight to perform material or texture blending."), CustomEditorAlias("FlaxEditor.CustomEditors.Editors.TerrainLayerEditor")]
         public Layers Layer = Layers.Layer0;
 
-        [EditorOrder(15), Tooltip("import single-channel splatmap to current layer"), CustomEditorAlias("FlaxEditor.Tools.Terrain.Paint.TerrainSplatmapImportEditor")]
+        [EditorOrder(15), Tooltip("If enabled, painting a layer will reduce other layers proportionally (default). If disabled, only the selected layer is modified and other layers are preserved.")]
+        public bool AffectOtherLayers = false;
+
+        [EditorOrder(20), Tooltip("import single-channel splatmap to current layer"), CustomEditorAlias("FlaxEditor.Tools.Terrain.Paint.TerrainSplatmapImportEditor")]
         public string SplatmapImport = "";
 
         /// <inheritdoc />
@@ -117,21 +120,27 @@ namespace FlaxEditor.Tools.Terrain.Paint
                     }
                     else
                     {
-                        // 旧逻辑：刷当前层，其他层按比例减（保留备份）
-                        var srcOther = (Color)p.SourceDataOther[zz * p.HeightmapSize + xx];
-                        var otherLayersSum = src.ValuesSum + srcOther.ValuesSum - src[c];
-                        var decreaseAmount = otherLayersSum > 0.0001f ? paintAmount / otherLayersSum : 0f;
-                        
-                        srcNew = Color.Clamp(src - src * decreaseAmount, Color.Zero, Color.White);
-                        srcNew[c] = Mathf.Saturate(src[c] + paintAmount);
-                        
-                        srcOther = Color.Clamp(srcOther - srcOther * decreaseAmount, Color.Zero, Color.White);
-                        p.TempBufferOther[z * p.ModifiedSize.X + x] = srcOther;
-                        otherModified = true;
+                        if (AffectOtherLayers)
+                        {
+                            // 旧逻辑：刷当前层，其他层按比例减（保留备份）
+                            var srcOther = (Color)p.SourceDataOther[zz * p.HeightmapSize + xx];
+                            var otherLayersSum = src.ValuesSum + srcOther.ValuesSum - src[c];
+                            var decreaseAmount = otherLayersSum > 0.0001f ? paintAmount / otherLayersSum : 0f;
 
-                        // 新逻辑：只改当前层，其他层不动
-                        //srcNew = src;
-                        //srcNew[c] = Mathf.Saturate(src[c] + paintAmount);
+                            srcNew = Color.Clamp(src - src * decreaseAmount, Color.Zero, Color.White);
+                            srcNew[c] = Mathf.Saturate(src[c] + paintAmount);
+
+                            srcOther = Color.Clamp(srcOther - srcOther * decreaseAmount, Color.Zero, Color.White);
+                            p.TempBufferOther[z * p.ModifiedSize.X + x] = srcOther;
+                            otherModified = true;
+                        }
+                        else
+                        {
+                            // 新逻辑：只改当前层，其他层不动
+                            srcNew = src;
+                            srcNew[c] = Mathf.Saturate(src[c] + paintAmount);
+                        }
+
                     }
 
                     p.TempBuffer[z * p.ModifiedSize.X + x] = srcNew;

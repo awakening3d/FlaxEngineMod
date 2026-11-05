@@ -36,6 +36,7 @@ namespace FlaxEditor.Tools.Terrain.Paint
 
             // 成功日志
             Debug.Log($"[SplatmapImport] Success: '{System.IO.Path.GetFileName(filePath)}' -> Layer {targetLayer} ({width}x{height}, {format})");
+            Editor.Instance.Scene.MarkSceneEdited(terrain.Scene);
             return null;
         }
 

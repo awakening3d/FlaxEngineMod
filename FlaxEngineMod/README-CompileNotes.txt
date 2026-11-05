@@ -792,12 +792,13 @@ Flax 引擎与编辑器改动总结
   - NamedVariable 的修复只放宽了加载路径, 删除路径行为保持不变。
   - ColorSelector 的修复只移除错误的光标重定位, 拖拽、绘制、数值更新逻辑均未改动。
 
-改动记录 - Flax 编辑器视口 Debug 绘制修复
-==================================================
 
-日期: 2026-11-04
-修改文件:
-  - Source/Editor/Viewport/MainEditorGizmoViewport.cs
+===========================================================
+Flax 编辑器视口 Debug 绘制修复
+日期：2026-11-04
+
+-----------------------------------------------------------------------------------------------------
+1.  Source/Editor/Viewport/MainEditorGizmoViewport.cs
 
 
 问题描述
@@ -831,3 +832,103 @@ _debugDrawData.DrawActors(false);
 - 未选中的 PostFxVolume 不再显示包围盒。
 - 选中 PostFxVolume 时仍正常显示包围盒。
 - 附带性能收益: 不再每帧遍历全场景 Actor 进行 Debug 绘制。
+
+
+
+===========================================================
+Flax 编辑器 FPSCamera 视角旋转修复
+日期：2026-11-05
+
+-----------------------------------------------------------------------------------------------------
+1. Source/Editor/Viewport/Cameras/FPSCamera.cs
+2. Source/Editor/Tools/Terrain/Paint/SingleLayerMode.cs
+3. Source/Editor/Tools/Terrain/Paint/TerrainSplatmapImportEditor.cs
+4. Source/Editor/Tools/Terrain/Paint/TerrainSplatmapImporter.cs
+5. Source/Editor/Tools/Terrain/Brushes/Brush.cs
+
+问题描述
+--------
+在编辑器视口中, 按住 Alt + 鼠标左键拖拽旋转视野时,
+相机位置会瞬间跳到极远的地方, 完全失去控制。
+
+
+根因分析
+--------
+FPSCamera 类中定义了全局目标点:
+    public Vector3 TargetPoint = new Vector3(-200);
+
+在没有任何选中物体或聚焦 (Focus) 操作的情况下, TargetPoint 会一直
+保留这个旧值。当用户按 Alt 旋转时, 原逻辑以下面这段代码计算相机位置:
+
+    float orbitRadius = Mathf.Max((float)Vector3.Distance(ref position, ref TargetPoint), 0.0001f);
+    Vector3 localPosition = Viewport.ViewDirection * (-1 * orbitRadius);
+    Viewport.ViewPosition = TargetPoint + localPosition;
+
+因为 TargetPoint 可能距离相机数百甚至数千米, 导致轨道半径极大,
+鼠标轻微旋转就会让相机瞬间甩到远处的球面上。
+
+另外, 滚轮缩放时 TargetPoint 没有跟随相机移动, 会进一步拉大这个距离,
+使得问题在飞行一段距离后更加严重。
+
+
+修复内容1
+----------
+文件: Source/Editor/Viewport/Cameras/FPSCamera.cs
+方法: UpdateView
+
+修改前:
+    if (input.IsOrbiting)
+    {
+        float orbitRadius = Mathf.Max((float)Vector3.Distance(ref position, ref TargetPoint), 0.0001f);
+        Vector3 localPosition = Viewport.ViewDirection * (-1 * orbitRadius);
+        Viewport.ViewPosition = TargetPoint + localPosition;
+    }
+
+修改后:
+    if (input.IsOrbiting)
+    {
+        // 强制将旋转中心设为相机前方 9000 米处（仅局部生效, 不污染全局 TargetPoint）
+        float orbitRadius = 9000.0f;
+        Vector3 customPivot = position + forward * orbitRadius;
+        Vector3 localPosition = Viewport.ViewDirection * (-1 * orbitRadius);
+        Viewport.ViewPosition = customPivot + localPosition;
+    }
+
+说明:
+    使用局部变量 customPivot 强制指定旋转中心为相机前方 9000 米处,
+    不再依赖全局的 TargetPoint。9000 米半径足够大, 旋转时视觉上接近平移,
+    避免了原来的瞬间飞天问题。
+
+    刻意不修改全局 TargetPoint, 以避免连带副作用:
+    - Relative Panning 模式下平移速度依赖 TargetPoint 距离, 污染后会导致平移飞快。
+    - FocusSelection 等其他依赖 TargetPoint 的逻辑会受影响。
+
+
+修复效果
+--------
+- 按住 Alt 旋转时相机稳定围绕前方远处的点旋转, 不再飞天。
+- 平移 (Pan) 手感保持不变。
+- 聚焦 (F 键)、缩放、Gizmo 操作等其他逻辑不受影响。
+- 全局 TargetPoint 保持原状, 不影响其他依赖它的功能。
+
+修改内容2
+----------
+在默认情况下, 使用地形绘制工具 (Paint Tool) 刷地形图层时,
+代码会自动按比例削减其他图层的权重 (AffectOtherLayers = true)。
+这导致用户只想单独刷某一个图层时, 不小心破坏了其他已经刷好的图层混合,
+体验不佳, 且增加了撤销和修复的负担。
+修改 AffectOtherLayers 初始值为 false
+
+修改内容3
+----------
+splatmap import 增加 jpg格式
+
+修改内容4
+----------
+TerrainSplatmapImporter 导入成功后标记场景修改 Scene.MarkSceneEdited
+
+修改内容5
+----------
+修改默认brush size =1, 防止误刷
+
+
