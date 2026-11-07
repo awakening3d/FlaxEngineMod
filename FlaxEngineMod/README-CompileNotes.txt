@@ -931,4 +931,115 @@ TerrainSplatmapImporter 导入成功后标记场景修改 Scene.MarkSceneEdited
 ----------
 修改默认brush size =1, 防止误刷
 
+===========================================================
+Flax 修改记录
+日期：2026-11-06
+
+-----------------------------------------------------------------------------------------------------
+1. Source\Engine\Terrain\Terrain.cpp
+2. Source\Editor\Editor.cs
+3. Source/Engine/Content/Assets/Texture.h
+4. Source/Engine/Content/Assets/Texture.cpp
+5. Source/Editor/Windows/Assets/TextureWindow.cs
+
+修改内容1
+----------
+RepairHeightmapEdge 改为不自动落盘
+editor里调用后设置脏标记
+
+修改内容2
+-----------
+在 Texture 资产窗口中新增导出功能，支持将纹理导出为可见图片格式（含压缩格式），并支持 HDR 浮点纹理导出为 .hdr。
+
+涉及文件:
+  - Source/Engine/Content/Assets/Texture.h
+  - Source/Engine/Content/Assets/Texture.cpp
+  - Source/Editor/Windows/Assets/TextureWindow.cs
+
+1. 背景与问题
+--------------
+此前 Flax 编辑器没有直接导出纹理图片的入口。
+底层虽有 TextureTool::ExportTexture（支持压缩格式自动解码为可见像素），
+但该函数没有 API_FUNCTION 标记，C# 侧不可见。
+
+TextureTool::ExportTexture 内部通过 DirectXTex 处理:
+  - 压缩格式（BC1/BC3/BC5/BC7 等）自动 Decompress 为 R8G8B8A8_UNorm
+  - 输出 PNG / BMP / TGA / JPG 等可见格式
+  - .hdr 分支仅支持浮点输入格式
+  - 像素数据原样保留，不做 gamma 修正
+
+
+2. C++ 侧改动
+-------------
+文件: Texture.h
+
+在 #if USE_EDITOR 区块内新增:
+
+    API_FUNCTION() bool ExportToImage(const StringView& path);
+
+说明:
+  - 使用 API_FUNCTION() 标记，使绑定生成器将其暴露到 C# 的 Texture 类。
+  - 选择在 Texture 上包一层，而不是直接给 TextureTool::ExportTexture 加 API_FUNCTION，
+    原因是 TextureData 在 C# 侧的可见性不确定，避免依赖它。
+
+
+文件: Texture.cpp
+
+新增实现:
+    bool Texture::ExportToImage(const StringView& path)
+
+说明:
+  - GetTextureData 是 TextureBase 的公开成员，读取所有 mip 和 array slice 的原始数据。
+  - 压缩格式在此处不解压，由 TextureTool::ExportTexture 内部的 DirectXTex 处理。
+  - 需要重新编译 FlaxEngine，C# 侧才会生成 ExportToImage 方法。
+
+
+3. C# 侧改动
+------------
+文件: TextureWindow.cs
+
+在构造函数中添加导出按钮:
+
+    _toolstrip.AddSeparator();
+    _toolstrip.AddButton("Export", ExportTexture).LinkTooltip("Export texture to file");
+
+说明:
+  - 使用 ToolStrip.AddButton(string, Action) 重载，自动生成纯文字按钮，无需图标。
+
+
+新增 ExportTexture 方法:
+
+    private void ExportTexture()
+
+说明:
+  - filter 末尾使用双 \0 结束，符合 Win32 保存对话框约定。
+  - 支持导出格式: PNG / TGA / BMP / HDR。
+  - .hdr 前置格式校验: 只有浮点格式（R16G16B16A16_Float / R32G32B32A32_Float / R32G32B32_Float）
+    才能导出为 .hdr，否则提前报错并说明当前格式。
+  - 压缩格式（BC1/BC3/BC5/BC7 等）会自动由 DirectXTex 解码为可见像素。
+  - 若用户选择的扩展名不在支持范围内，底层 GetImageType 会失败，
+    最终由 ExportToImage 返回 true，C# 侧打出 Failed to export 日志。
+
+
+4. 支持与不支持的能力
+---------------------
+支持:
+  - PNG / TGA / BMP 等可见格式导出（含压缩格式自动解码）
+  - R16G16B16A16_Float 等浮点格式导出为 .hdr
+  - 法线压缩（BC5）导出为可见图片（R/G 通道有数据，B 通道为 0）
+  - 导出分辨率与原纹理一致
+  - 导出像素为原始数据，不做 sRGB 编码
+
+不支持:
+  - 导出为 .exr（GetImageType 未实现，会返回 E_NOTIMPL）
+  - LDR 纹理导出为 .hdr（无 HDR 数据，且 SaveToHDRFile 要求浮点输入）
+  - 压缩纹理直接导出为 .hdr（未实现前置解压）
+
+
+5. 已知注意事项
+---------------
+- 若纹理正在流送（IsLoaded 为 false），ExportToImage 会阻塞主线程等待加载完成。
+  后续可在 ExportTexture 中加入 IsLoaded 检查，避免 UI 卡顿。
+
+
 

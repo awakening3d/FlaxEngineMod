@@ -1499,12 +1499,14 @@ void Terrain::RepairHeightmapEdge()
     // 修补边界法线
     RepairHeightmapEdgePixel();
 
+    /* 引擎底层只管修改内存数据，不应该直接落盘
     // 落盘
     for (const auto& kv : patchGrid)
     {
         TerrainPatch* patch = kv.Value;
         patch->SaveHeightData();
     }
+    */
 
     LOG(Info, "RepairHeightmapEdge finished. Patches processed: {0}", patchGrid.Count());
 }

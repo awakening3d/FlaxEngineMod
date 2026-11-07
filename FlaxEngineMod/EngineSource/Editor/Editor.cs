@@ -1396,6 +1396,7 @@ namespace FlaxEditor
                     if (actor is Terrain terrain)
                     {
                         terrain.RepairHeightmapEdge();
+                        Editor.Instance.Scene.MarkSceneEdited(terrain.Scene);
                         Debug.Log($"执行地形边界修复: {terrain.Name}");
                     }
                 }
