@@ -1086,3 +1086,112 @@ Windows 平台在有线手柄接入时无法识别，但无线接收器可用。
 -----------
 彻底解决了“先开无线，再插有线无反应”的恶性 Bug。
 Input Mapping 现在能稳定绑定当前正在使用的手柄（因为物理动作会强制将其提升至 0 号位），使游戏控制完全恢复正常。
+
+
+===========================================================
+Flax SkyLight 半球近似光照模式
+日期：2026-11-09
+
+-----------------------------------------------------------------------------------------------------
+涉及修改文件：
+
+1.  Source/Engine/Level/Actors/SkyLight.h
+2.  Source/Engine/Level/Actors/SkyLight.cpp
+3.  Source/Engine/Renderer/Config.h
+4.  Source/Engine/Renderer/RenderList.cpp
+5.  Source/Shaders/LightingCommon.hlsl
+6.  Source/Shaders/Lighting.hlsl
+
+
+问题描述
+--------
+SkyLight 仅支持 CaptureScene 和 CustomTexture 两种模式，都需要一个有效
+的 cubemap 纹理来采样天空光照。当项目不使用 cubemap（例如纯方向光 + 半球
+近似风格化渲染）时，只能绑定一张纯色 cubemap 或留空，前者浪费显存和采样
+带宽，后者在 CustomTexture 未指定贴图时直接对空纹理调用 SampleLevel，行为
+未定义。
+
+需求：为 SkyLight 增加一个不采样 cubemap、直接根据表面法线朝向计算亮度
+的模式，且不新增 GPU 常量字段、不改变结构体大小。
+
+
+修复内容
+--------
+文件: SkyLight.h
+枚举: Modes
+
+在 CaptureScene = 0、CustomTexture = 1 之后增加：
+
+    HemisphereApproximate = 2,
+
+
+文件: SkyLight.cpp
+方法: Bake
+
+1) Bake()
+   非 CaptureScene 模式不参与烘焙：
+
+    void SkyLight::Bake(float timeout)
+    {
+        if (Mode != Modes::CaptureScene)
+            return;
+        ProbesRenderer::Bake(this, timeout);
+    }
+
+
+说明:
+    Draw()、Serialize()、Deserialize() 无需改动。Draw() 中
+    data.Image = GetSource() 在近似模式下已自动为 nullptr；枚举值本身
+    随 Mode 字段序列化，旧场景数据不受影响。
+
+
+文件: Config.h
+结构: ShaderLightData
+
+将原本闲置的填充字段改为位标志字段，类型 float -> uint32，大小仍为
+4 字节，结构体对齐不变：
+
+    // 原: float Dummy0;
+    uint32 Flags;
+
+
+文件: RenderList.cpp
+方法: RenderSkyLightData::SetShaderData
+
+根据 Image 是否为空置位。CustomTexture 未指定贴图、CaptureScene 未烘焙
+完成时 Image 也为空，均自动走近似模式：
+
+    uint32 flags = 0;
+    if (nullptr==Image) flags |= 1; //Hemisphere Approximate
+    data.Flags = flags;
+
+说明:
+    采用常量在前的比较写法，避免误写为赋值。
+
+
+文件: LightingCommon.hlsl
+结构: LightData
+
+对应 C++ 侧同步修改：
+
+    // 原: float Dummy0;
+    uint Flags;
+
+
+文件: Lighting.hlsl
+函数: GetSkyLightLighting
+
+按 Flags 的 bit 0 判断是否走近似分支，近似分支将法线 Y 分量映射到
+0~1 ，替代 cubemap 采样值：
+
+	if ((lightData.Flags & 0x1) != 0) //Hemisphere Approximate
+		diffuseLookup = lightData.Color.rgb * saturate(gBuffer.Normal.y * 0.7 + 0.3);
+	else
+		diffuseLookup = ibl.SampleLevel(SamplerLinearClamp, uvw, mip).rgb * lightData.Color.rgb;
+
+说明:
+    1) 亮度映射 saturate(n.y * 0.7 + 0.3) 朝上 1.0, 水平 0.3, 往下渐黑
+    2) AdditiveColor 加法、distanceAlpha 距离淡出、gBuffer.AO、
+       Luminance 返回值全部复用原逻辑，近似模式在远处同样正常淡出。
+    3) Flags 为位域，后续可扩展 bit 1、bit 2 等新标志，无需新增字段。
+
