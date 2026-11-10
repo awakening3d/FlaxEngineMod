@@ -1195,3 +1195,64 @@ SkyLight 仅支持 CaptureScene 和 CustomTexture 两种模式，都需要一个
        Luminance 返回值全部复用原逻辑，近似模式在远处同样正常淡出。
     3) Flags 为位域，后续可扩展 bit 1、bit 2 等新标志，无需新增字段。
 
+===========================================================
+Flax HDR output, 以及 sdr 模式的 fakeHDR
+日期：2026-11-10
+
+-----------------------------------------------------------------------------------------------------
+1.  Source\Engine\GraphicsDevice\DirectX\DX11\GPUSwapChainDX11.h
+2.  Source\Engine\GraphicsDevice\DirectX\DX11\GPUSwapChainDX11.cpp
+3.  Source\Engine\Renderer\PostProcessingPass.cpp
+4.  Source\Engine\Core\Config\GraphicsSettings.h
+5.  Source\Shaders\GammaCorrectionCommon.hlsl
+6.  Source\Shaders\PostProcessing.shader
+7.  Source\Shaders\ColorGrading.shader
+
+修改内容1
+----------
+底层交换链改造 (DX11)
+------------------------------------------
+* 目标：使 DX11 交换链支持 HDR10 输出。
+* 修改：
+  1. 格式切换：当开启 EnableHDROutput 时，交换链格式设置为 R10G10B10A2_UNorm。
+  2. 色彩空间：通过 IDXGISwapChain3::SetColorSpace1 设置 DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 (PQ)。
+  3. 修复 Bug：修正 ResizeBuffers 时未传入新格式导致 HDR 不生效的问题；非 HDR 模式强制回退。
+  4. 编辑器保护：编辑器下强制 SDR，避免 UI 刺眼和驱动报错。
+
+修改内容2
+----------
+后处理管线改造 (PostProcessingPass & Shader)
+---------------------------------------------------
+* 目标：区分 HDR / SDR 路径，并支持动态参数。
+* C++ 侧：
+  1. 新增输出枚举：OUTPUT_HDR = 2。
+  2. 数据派发：根据 GraphicsSettings::Get()->EnableHDROutput 动态设置 OutputColorSpace。
+
+* Shader 侧 (PS_Composite)：
+  分出三条截然不同的色彩路径：
+  1. OUTPUT_HDR：仅执行 SoftClip，直接交由系统硬件 PQ 解码。
+  2. OUTPUT_LINEAR：执行 SoftClip + FakeHDR，产生最高对比度的暴力通透感。
+  3. OUTPUT_SRGB：执行 FakeHDR + LinearToSrgb，产生保留暗部、对比平滑的柔和感。
+
+修改内容3
+----------
+核心数学函数 (GammaCorrectionCommon.hlsl)
+---------------------------------------------------
+* 彻底抛弃了传统的 ACES/AgX 等 Tonemapping，手搓核心数学函数：
+
+1. SoftClip(float3 x)：
+   - 原理：平滑截断。x <= 0.5 保持不变，x > 0.5 通过有理函数平滑逼近 0.9。
+   - 优势：零分支 (Branchless)、纯 SIMD 运算，完美保住暗部，不产生死白。
+
+2. FakeHDR(float3 pqSignal, ...)：
+   - 原理：模拟硬件 PQ 解码。将输入视作 PQ 信号，通过 ST2084 公式解码出物理亮度 (nits)。
+   - 暗部增益：利用 pqKnee 和 pqGain 在解码前对暗部信号进行动态放大，硬生生把 PQ 曲线黑洞里的细节拽出来。
+   - 硬截断：除以 maxDisplayNits (如 300/500) 后 saturate，实现暴力的 R8G8B8 截断效果。
+
+---------------
+最终效果总结
+---------------
+1. 解决了开 HDR 后雪地高光死白、刺眼的问题。
+2. 找到了 HDR 渲染的最佳实践：关闭自动曝光和默认 Tonemap，依靠 SoftClip 守住高光上限，直出硬件。
+3. 成功利用 PQ 曲线的数学特性，在 SDR 屏幕上模拟出了高对比度、高宽容度的“伪 HDR”画面。
+4. 提供了一套可通过参数切换的三种画面风格（物理真实、暴力冲击、柔和平滑）。

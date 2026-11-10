@@ -4,11 +4,13 @@
 
 #include "GPUSwapChainDX11.h"
 #include "GPUContextDX11.h"
+#include "Engine/Engine/Engine.h"
 #include "Engine/Platform/Window.h"
 #include "Engine/Graphics/RenderTools.h"
 #include "Engine/GraphicsDevice/DirectX/RenderToolsDX.h"
 #include "Engine/Profiler/ProfilerCPU.h"
 #include "Engine/Profiler/ProfilerMemory.h"
+#include "Engine/Core/Config/GraphicsSettings.h"
 
 GPUSwapChainDX11::GPUSwapChainDX11(GPUDeviceDX11* device, Window* window)
     : GPUResourceDX11(device, StringView::Empty)
@@ -86,6 +88,15 @@ bool GPUSwapChainDX11::IsFullscreen()
     return state == TRUE;
 }
 
+
+// GPUSwapChainDX11.cpp
+PixelFormat GPUSwapChainDX11::getGraphicsSettingsFormat() const
+{
+    return GraphicsSettings::Get()->EnableHDROutput && Engine::IsPlayMode()
+        ? PixelFormat::R10G10B10A2_UNorm
+        : GPU_BACK_BUFFER_PIXEL_FORMAT;
+}
+
 void GPUSwapChainDX11::SetFullscreen(bool isFullscreen)
 {
 #if PLATFORM_WINDOWS
@@ -106,6 +117,7 @@ void GPUSwapChainDX11::SetFullscreen(bool isFullscreen)
             output = outputDX.Output.Get();
             swapChainDesc.BufferDesc = outputDX.DesktopViewMode;
         }
+        swapChainDesc.BufferDesc.Format = RenderToolsDX::ToDxgiFormat(getGraphicsSettingsFormat());
 
         if (FAILED(_swapChain->ResizeTarget(&swapChainDesc.BufferDesc)))
         {
@@ -162,18 +174,18 @@ void GPUSwapChainDX11::Present(bool vsync)
 
 bool GPUSwapChainDX11::Resize(int32 width, int32 height)
 {
-    // Check if size won't change
-    if (width == _width && height == _height)
-    {
+    const PixelFormat newFormat = getGraphicsSettingsFormat();
+    if (width == _width && height == _height && newFormat == _format)
         return false;
-    }
+
 
     _device->WaitForGPU();
     GPUDeviceLock lock(_device);
 #if PLATFORM_WINDOWS
     _allowTearing = _device->_allowTearing;
 #endif
-    _format = GPU_BACK_BUFFER_PIXEL_FORMAT;
+    //_format = GPU_BACK_BUFFER_PIXEL_FORMAT;
+    _format = newFormat;
 
 #if PLATFORM_WINDOWS
     DXGI_SWAP_CHAIN_DESC swapChainDesc;
@@ -196,10 +208,10 @@ bool GPUSwapChainDX11::Resize(int32 width, int32 height)
         {
             swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
             swapChainDesc.BufferDesc.RefreshRate.Denominator = 0;
-            swapChainDesc.BufferDesc.Format = RenderToolsDX::ToDxgiFormat(_format);
             swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
             swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
         }
+        swapChainDesc.BufferDesc.Format = RenderToolsDX::ToDxgiFormat(_format);
         swapChainDesc.BufferDesc.Width = width;
         swapChainDesc.BufferDesc.Height = height;
         swapChainDesc.SampleDesc.Count = 1;
@@ -210,10 +222,10 @@ bool GPUSwapChainDX11::Resize(int32 width, int32 height)
         swapChainDesc.Windowed = TRUE;
         swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
         swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-        if (_allowTearing)
+        if (_allowTearing || (GraphicsSettings::Get()->EnableHDROutput && Engine::IsPlayMode()) )
         {
             swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-            swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+            if (_allowTearing) swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
         } 
 #else
         swapChainDesc.Width = width;
@@ -259,12 +271,36 @@ bool GPUSwapChainDX11::Resize(int32 width, int32 height)
 
 #if PLATFORM_WINDOWS
         _swapChain->GetDesc(&swapChainDesc);
-        VALIDATE_DIRECTX_CALL(_swapChain->ResizeBuffers(swapChainDesc.BufferCount, width, height, swapChainDesc.BufferDesc.Format, swapChainDesc.Flags));
+        VALIDATE_DIRECTX_CALL(_swapChain->ResizeBuffers(swapChainDesc.BufferCount, width, height, RenderToolsDX::ToDxgiFormat(_format), swapChainDesc.Flags));
 #else
         _swapChain->GetDesc1(&swapChainDesc);
-        VALIDATE_DIRECTX_CALL(_swapChain->ResizeBuffers(swapChainDesc.BufferCount, width, height, swapChainDesc.Format, swapChainDesc.Flags));
+        VALIDATE_DIRECTX_CALL(_swapChain->ResizeBuffers(swapChainDesc.BufferCount, width, height, RenderToolsDX::ToDxgiFormat(_format), swapChainDesc.Flags));
 #endif
     }
+
+    // set color space
+    if (GraphicsSettings::Get()->EnableHDROutput && Engine::IsPlayMode())
+    {
+        ComPtr<IDXGISwapChain3> swapChain3;
+        if (SUCCEEDED(_swapChain->QueryInterface(IID_PPV_ARGS(&swapChain3))))
+        {
+            UINT support = 0;
+            if (SUCCEEDED(swapChain3->CheckColorSpaceSupport(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020, &support))
+                && (support & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT))
+            {
+                swapChain3->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
+            }
+            else
+            {
+                LOG(Warning, "HDR output requested but HDR10 color space is not supported. Check Windows HDR settings.");
+            }
+        }
+    }
+    else
+    {
+        //swapChain3->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709); // 回 SDR
+    }
+
 
     _width = width;
     _height = height;
