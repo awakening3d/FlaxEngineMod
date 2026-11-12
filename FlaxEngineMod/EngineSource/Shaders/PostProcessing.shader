@@ -764,6 +764,9 @@ float4 PS_Composite(Quad_VS2PS input) : SV_Target
     float noise = rand2dTo1d(input.TexCoord);
     color.rgb = QuantizeColor(color.rgb, noise, QuantizationError);
 
+	// Apply dither to eliminate color banding, especially in fog and gradients
+	//color.rgb = ApplyDither(color.rgb, input.TexCoord);
+
 	// Return final pixel color (preserve input alpha)
 	return color;
 }
