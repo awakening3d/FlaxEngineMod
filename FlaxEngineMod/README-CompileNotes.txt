@@ -1316,3 +1316,70 @@ ExponentialHeightFog.hlsl -> GetExponentialHeightFog 函数末尾。
 ================================================================================
 
 
+================================================================================
+Flax 引擎ui缩放功能
+日期：2026-11-13
+
+一、 涉及修改文件
+--------------------------------------------------------------------------------------------------------------------------
+1. Source\Engine\UI\GUI\CanvasScaler.cs
+
+改动目的：新增 KeepScaleWithResolution 缩放模式，实现"以 ResolutionMin 为基准、UI 占屏比例恒定"的等比缩放
+======================================================================
+
+------------------------------------------------------------
+一、改动背景
+------------------------------------------------------------
+引擎原有 ScalingMode.ScaleWithResolution 的公式为：
+    scale = ResolutionMin / 当前分辨率值
+屏幕变小时 scale 变大，UI 物理尺寸反而放大，无法实现
+"UI 占屏幕比例保持不变"的需求。
+
+新增模式使用相反方向的公式：
+    scale = 当前分辨率值 / ResolutionMin
+使 1280x720 下 scale = 1，1920x1080 下 scale = 1.5，
+960x540 下 scale = 0.75，UI 占屏比例恒定。
+
+------------------------------------------------------------
+二、改动点 1：ScalingMode 枚举新增成员
+------------------------------------------------------------
+    KeepScaleWithResolution,
+
+------------------------------------------------------------
+三、改动点 2：UpdateScale() 的 switch 新增 case
+------------------------------------------------------------
+位置：UpdateScale() 方法内，case ScalingMode.ScaleWithResolution 之后、case ScalingMode.ScaleWithDpi 之前
+
+说明：
+- 复用已有的 ResolutionMode 选择缩放基准轴
+- 基准值取 ResolutionMin 对应轴的值
+- ResolutionMax 与 ResolutionCurve 在此模式下不参与计算
+
+------------------------------------------------------------
+四、改动点 3 ：编辑器可见性辅助属性
+------------------------------------------------------------
+位置：#if FLAX_EDITOR 区域内
+    private bool IsScaleWithResolution => _scalingMode == ScalingMode.ScaleWithResolution
+                                       || _scalingMode == ScalingMode.KeepScaleWithResolution;
+
+原 ResolutionMode / ResolutionMin / ResolutionMax / ResolutionCurve
+上的 VisibleIf(nameof(IsScaleWithResolution)) 保持不变，
+使这些参数在新模式下也能在编辑器中显示和调整。
+
+------------------------------------------------------------
+五、使用方式
+------------------------------------------------------------
+1. 选中 CanvasScaler
+2. Scaling 选择 KeepScaleWithResolution
+3. ResolutionMode 选择 LongestSide（宽屏）或 ShortestSide（竖屏/保守）
+4. ResolutionMin 填基准分辨率，例如 (1280, 720)
+5. ResolutionMax 和 ResolutionCurve 在新模式下不生效，可忽略
+
+------------------------------------------------------------
+六、注意事项
+------------------------------------------------------------
+1. Size 为 CanvasScaler 自身布局尺寸，默认 StretchAll 时约等于
+   屏幕分辨率。若实测偏差较大，可将
+       Float2 resolution = Float2.Max(Size, Float2.One);
+   改为
+       Float2 resolution = Float2.Max(Screen.Size, Float2.One);
