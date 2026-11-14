@@ -9,7 +9,6 @@
 #include "Engine/Graphics/RenderTools.h"
 #include "Engine/Graphics/RenderTargetPool.h"
 #include "Engine/Engine/Time.h"
-#include "Engine/Core/Config/GraphicsSettings.h"
 
 #define GB_RADIUS 6
 #define GB_KERNEL_SIZE (GB_RADIUS * 2 + 1)
@@ -370,7 +369,7 @@ void PostProcessingPass::Render(RenderContext& renderContext, GPUTexture* input,
     data.InvInputSize = Float2(1.0f / static_cast<float>(w1), 1.0f / static_cast<float>(h1));
     data.InputAspect = static_cast<float>(w1) / h1;
 
-    if (GraphicsSettings::Get()->EnableHDROutput)
+    if (Graphics::EnableHDROutput)
     {
         data.OutputColorSpace = OUTPUT_HDR; // hdr output
     }

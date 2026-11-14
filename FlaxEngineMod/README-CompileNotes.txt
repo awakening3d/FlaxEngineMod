@@ -16,12 +16,15 @@ Flax Engine 个人定制修改完整记录（编译问题 + DX11修复 + 地形L
 二、第一轮引擎源码修改：DX11 编辑器绿屏修复（amd专属驱动Bug）
 问题现象
 DX11 模式下编辑器视口随机绿屏、画面崩坏、缓冲区垃圾数据输出。
-修改文件清单（仅1个文件，无h文件改动）
+修改文件清单
 - Source/Engine/GraphicsDevice/DirectX/DX11/GPUSwapChainDX11.cpp
+- Source/Engine/GraphicsDevice/DirectX/DX11/GPUDeviceDX11.cpp
+
 具体改动点
 - 重写 CreateSwapChain 交换链参数：关闭 AllowTearing、调整后备缓冲区数量、修改 SwapEffect
 - 修改 Present() 函数 DXGI 提交 Flag，规避 AMD 驱动异常
 - 修复 Resize 窗口缩放重建交换链逻辑，防止缩放后再次绿屏
+- GPUDeviceDX11.cpp: _allowTearing = false; // 强制关闭 Tearing
 备注：.h 文件完全未改动，无新增变量、无函数签名变更。
 
 ---
@@ -1383,3 +1386,138 @@ Flax 引擎ui缩放功能
        Float2 resolution = Float2.Max(Size, Float2.One);
    改为
        Float2 resolution = Float2.Max(Screen.Size, Float2.One);
+
+
+================================================================================
+Flax hdr/sdr 动态切换功能
+日期：2026-11-14
+
+一、 涉及修改文件
+--------------------------------------------------------------------------------------------------------------------------
+1.  Source/Engine/Graphics/Graphics.h
+2.  Source/Engine/Graphics/Graphics.cpp
+3.  Source/Engine/Graphics/GPUSwapChain.h
+4.  Source/Engine/GraphicsDevice/DirectX/DX11/GPUSwapChainDX11.h
+5.  Source/Engine/GraphicsDevice/DirectX/DX11/GPUSwapChainDX11.cpp
+6.  Source/Engine/GraphicsDevice/DirectX/DX12/GPUSwapChainDX12.h
+7.  Source/Engine/GraphicsDevice/Null/GPUSwapChainNull.h
+8.  Source/Engine/Engine/Screen.h
+9.  Source/Engine/Engine/Screen.cpp
+10. Source/Engine/Renderer/PostProcessingPass.cpp
+
+
+改动目的：在运行时动态切换 hdr / sdr
+======================================================================
+1. Graphics.h
+- 在 Graphics 类中新增：
+    API_FIELD() static bool EnableHDROutput;
+2. Graphics.cpp
+- 新增静态字段初始化：
+    bool Graphics::EnableHDROutput = false;
+- GraphicsSettings::Apply() 中：
+    Graphics::EnableHDROutput = EnableHDROutput;
+3. GPUSwapChainDX11.h
+- 新增 public:
+    void ResetSwapChain() override;
+- 新增 private:
+    void ResetSwapChainInternal(int32 width, int32 height);
+
+4. GPUSwapChainDX11.cpp
+关键改动：
+(1) getGraphicsSettingsFormat() 读取源改为：
+    return Graphics::EnableHDROutput && Engine::IsPlayMode()
+        ? PixelFormat::R10G10B10A2_UNorm
+        : GPU_BACK_BUFFER_PIXEL_FORMAT;
+
+(2) Resize() 保留提前返回判断，转调 ResetSwapChainInternal：
+    bool GPUSwapChainDX11::Resize(int32 width, int32 height)
+    {
+        const PixelFormat newFormat = getGraphicsSettingsFormat();
+        if (width == _width && height == _height && newFormat == _format)
+            return false;
+        ResetSwapChainInternal(width, height);
+        return false;
+    }
+
+(3) 新增 ResetSwapChain()：
+    void GPUSwapChainDX11::ResetSwapChain()
+    {
+        ResetSwapChainInternal(_width, _height);
+    }
+
+(4) ResetSwapChainInternal 内：
+    - 计算 newFormat，判断 formatChanged；
+    - 若 _swapChain != nullptr && formatChanged，先 ReleaseGPU()
+      强制走创建分支（HDR10 色彩空间要求 flip 模型）；
+    - 交换链创建时 SwapEffect 统一为 FLIP_DISCARD（见下）；
+    - 色彩空间处理：HDR 分支设 G2084_NONE_P2020，
+      SDR 分支设回 G22_NONE_P709（取消原注释）；
+    - swapChain3 的获取提到 if/else 外面统一处理。
+
+(5) [ 关键修复 ] SwapEffect 统一为 FLIP_DISCARD：(runtime)
+    原代码：
+        if (_allowTearing || (Graphics::EnableHDROutput && Engine::IsPlayMode()))
+        {
+            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+            if (_allowTearing) swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+        }
+    改为无条件 flip：(runtime)
+
+       #if USE_EDITOR //editor不能使用 flip
+            if (_allowTearing || (Graphics::EnableHDROutput && Engine::IsPlayMode()))
+       #endif
+
+    原因：HDR 用 FLIP_DISCARD、SDR 用 DISCARD 来回切换时，
+          Present 在 DISCARD 模型上失效，画面冻结但逻辑/输入正常。
+          统一 flip 后 HDR→SDR 切换正常。
+
+5. GPUSwapChain.h
+- 新增纯虚接口：
+    virtual void ResetSwapChain() = 0;
+- 注意：所有后端实现（含 GPUSwapChainNull）必须实现该接口
+
+6. Screen.h
+- 新增：
+    API_FUNCTION() static void ResetSwapChain();
+
+7. Screen.cpp
+- 顶部新增 include：
+    #include "Engine/Graphics/GPUSwapChain.h"
+  （缺少会报 E0833 指向不完整类型）
+- 实现 ResetSwapChain()：
+   void Screen::ResetSwapChain()
+   {
+       auto window = Engine::MainWindow;
+       if (!window) return;
+       auto swapChain = window->GetSwapChain();
+       if (swapChain) swapChain->ResetSwapChain();
+   }
+
+8. PostProcessingPass.cpp
+- OutputColorSpace 判断的读取源改为 Graphics：
+    if (Graphics::EnableHDROutput)
+        data.OutputColorSpace = OUTPUT_HDR;
+    else if (Graphics::GammaColorSpace)
+        data.OutputColorSpace = OUTPUT_LINEAR;
+    else
+        data.OutputColorSpace = OUTPUT_SRGB;
+
+------------------------------------------------------------
+二、遇到的问题与结论
+------------------------------------------------------------
+1. C# 报 CS0103 GraphicsSettings 不存在
+   → GraphicsSettings 属 FlaxEditor.Content.Settings，
+     运行时不可见。改用 Graphics.EnableHDROutput 作为运行时真源。
+
+2. HDR10 色彩空间设置失败（HDR10 color space is not supported）
+   → HDR10 要求交换链为 flip 模型；首次切换走 ResizeBuffers，
+     SwapEffect 仍是 DISCARD。修复：格式变化时 ReleaseGPU 重建，
+     并统一 SwapEffect 为 FLIP_DISCARD。
+
+3. 切到 HDR 正常，切回 SDR 画面冻结（逻辑/输入仍响应）
+   → SwapEffect 在 FLIP_DISCARD 与 DISCARD 间切换导致 Present 失效。
+     修复：统一使用 FLIP_DISCARD，不再按 EnableHDROutput 切 DISCARD。(#if USE_EDITOR 判断，editor不能使用 flip)
+
+
+
+

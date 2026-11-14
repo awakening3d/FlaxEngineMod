@@ -40,6 +40,7 @@ private:
     void getBackBuffer();
     void releaseBackBuffer();
 
+    void ResetSwapChainInternal(int32 width, int32 height);
 public:
 
     // [GPUResourceDX11]
@@ -51,6 +52,7 @@ public:
     GPUTextureView* GetBackBufferView() override;
     void Present(bool vsync) override;
     bool Resize(int32 width, int32 height) override;
+    void ResetSwapChain() override;
     void CopyBackbuffer(GPUContext* context, GPUTexture* dst) override;
 
 protected:

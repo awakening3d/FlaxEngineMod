@@ -6,11 +6,11 @@
 #include "GPUContextDX11.h"
 #include "Engine/Engine/Engine.h"
 #include "Engine/Platform/Window.h"
+#include "Engine/Graphics/Graphics.h"
 #include "Engine/Graphics/RenderTools.h"
 #include "Engine/GraphicsDevice/DirectX/RenderToolsDX.h"
 #include "Engine/Profiler/ProfilerCPU.h"
 #include "Engine/Profiler/ProfilerMemory.h"
-#include "Engine/Core/Config/GraphicsSettings.h"
 
 GPUSwapChainDX11::GPUSwapChainDX11(GPUDeviceDX11* device, Window* window)
     : GPUResourceDX11(device, StringView::Empty)
@@ -40,7 +40,7 @@ void GPUSwapChainDX11::getBackBuffer()
 #if GPU_USE_WINDOW_SRV
     VALIDATE_DIRECTX_CALL(_device->GetDevice()->CreateShaderResourceView(_backBuffer, nullptr, &srv));
 #else
-	srv = nullptr;
+    srv = nullptr;
 #endif
 
     _backBufferHandle.Init(this, rtv, srv, nullptr, nullptr, _format, MSAALevel::None);
@@ -92,7 +92,7 @@ bool GPUSwapChainDX11::IsFullscreen()
 // GPUSwapChainDX11.cpp
 PixelFormat GPUSwapChainDX11::getGraphicsSettingsFormat() const
 {
-    return GraphicsSettings::Get()->EnableHDROutput && Engine::IsPlayMode()
+    return Graphics::EnableHDROutput && Engine::IsPlayMode()
         ? PixelFormat::R10G10B10A2_UNorm
         : GPU_BACK_BUFFER_PIXEL_FORMAT;
 }
@@ -178,13 +178,25 @@ bool GPUSwapChainDX11::Resize(int32 width, int32 height)
     if (width == _width && height == _height && newFormat == _format)
         return false;
 
+    ResetSwapChainInternal(width, height);
+    return false;
+}
 
+void GPUSwapChainDX11::ResetSwapChain()
+{
+    ResetSwapChainInternal(_width, _height);
+}
+
+void GPUSwapChainDX11::ResetSwapChainInternal(int32 width, int32 height)
+{
     _device->WaitForGPU();
     GPUDeviceLock lock(_device);
 #if PLATFORM_WINDOWS
     _allowTearing = _device->_allowTearing;
 #endif
-    //_format = GPU_BACK_BUFFER_PIXEL_FORMAT;
+
+    const PixelFormat newFormat = getGraphicsSettingsFormat();
+    const bool formatChanged = newFormat != _format;
     _format = newFormat;
 
 #if PLATFORM_WINDOWS
@@ -192,6 +204,12 @@ bool GPUSwapChainDX11::Resize(int32 width, int32 height)
 #else
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
 #endif
+    // HDR10 color space requires flip-model swap chain, so format changes must recreate it
+    if (_swapChain != nullptr && formatChanged)
+    {
+        ReleaseGPU();
+    }
+
     if (_swapChain == nullptr)
     {
         ReleaseGPU();
@@ -222,11 +240,13 @@ bool GPUSwapChainDX11::Resize(int32 width, int32 height)
         swapChainDesc.Windowed = TRUE;
         swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
         swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-        if (_allowTearing || (GraphicsSettings::Get()->EnableHDROutput && Engine::IsPlayMode()) )
+#if USE_EDITOR //editor不能使用 flip
+        if (_allowTearing || (Graphics::EnableHDROutput && Engine::IsPlayMode()))
+#endif
         {
             swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
             if (_allowTearing) swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
-        } 
+        }
 #else
         swapChainDesc.Width = width;
         swapChainDesc.Height = height;
@@ -279,10 +299,10 @@ bool GPUSwapChainDX11::Resize(int32 width, int32 height)
     }
 
     // set color space
-    if (GraphicsSettings::Get()->EnableHDROutput && Engine::IsPlayMode())
+    ComPtr<IDXGISwapChain3> swapChain3;
+    if (SUCCEEDED(_swapChain->QueryInterface(IID_PPV_ARGS(&swapChain3))))
     {
-        ComPtr<IDXGISwapChain3> swapChain3;
-        if (SUCCEEDED(_swapChain->QueryInterface(IID_PPV_ARGS(&swapChain3))))
+        if (Graphics::EnableHDROutput && Engine::IsPlayMode())
         {
             UINT support = 0;
             if (SUCCEEDED(swapChain3->CheckColorSpaceSupport(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020, &support))
@@ -295,12 +315,11 @@ bool GPUSwapChainDX11::Resize(int32 width, int32 height)
                 LOG(Warning, "HDR output requested but HDR10 color space is not supported. Check Windows HDR settings.");
             }
         }
+        else
+        {
+            swapChain3->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709); // back to SDR
+        }
     }
-    else
-    {
-        //swapChain3->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709); // 回 SDR
-    }
-
 
     _width = width;
     _height = height;
@@ -308,8 +327,6 @@ bool GPUSwapChainDX11::Resize(int32 width, int32 height)
     PROFILE_MEM_INC(Graphics, _memoryUsage);
 
     getBackBuffer();
-
-    return false;
 }
 
 void GPUSwapChainDX11::CopyBackbuffer(GPUContext* context, GPUTexture* dst)
