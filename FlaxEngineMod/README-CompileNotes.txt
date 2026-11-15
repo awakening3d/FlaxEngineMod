@@ -1519,5 +1519,73 @@ Flax hdr/sdr 动态切换功能
      修复：统一使用 FLIP_DISCARD，不再按 EnableHDROutput 切 DISCARD。(#if USE_EDITOR 判断，editor不能使用 flip)
 
 
+================================================================================
+FlaxUI 鼠标/手柄无缝控制系统
+日期：2026-11-15
+
+一、 涉及修改文件
+--------------------------------------------------------------------------------------------------------------------------
+1. Source/Engine/UI/GUI/CanvasRootControl.cs (引擎源码)
+2. Source/Game/UIManager.cs (新建项目脚本)
+3. Source/Game/GraphicsSettingsPanel.cs (项目脚本)
+4. Source/Game/PlayerScript.cs (项目脚本)
+5. Source/Game/FreeCamera.cs (项目脚本)
+
+------------------------------------------------------------
+二、改动目标
+------------------------------------------------------------
+1. 让手柄能像鼠标一样操作 UI（推左摇杆移动光标，按 A 键点击）。
+2. UI 打开时，显示并解锁鼠标，屏蔽玩家视角和开火；UI 关闭时恢复。
+3. 彻底禁用引擎自带的“手柄方向键跳转 UI 焦点”逻辑，避免按 A 键误触当前高亮按钮。
+
+------------------------------------------------------------
+三、各文件改动内容
+------------------------------------------------------------
+
+1. CanvasRootControl.cs（引擎源码）
+- 在类中添加全局静态开关：
+    public static bool DisableNavigation = false;
+- 在 Update(float deltaTime) 方法中，修改导航更新的判断条件：
+     原代码: if (SkipEvents)
+     新代码: if (SkipEvents || DisableNavigation)
+- 作用：由外部脚本控制是否禁用引擎原生的手柄 UI 导航逻辑，
+        防止手柄 A 键（Submit）直接触发当前焦点按钮。
+
+2. UIManager.cs（新建）
+- 作为一个挂载在场景中的 Script，通过静态属性向外暴露：
+    public static bool IsUIOpen { get; set; }
+- OnEnable 中禁用全局导航：CanvasRootControl.DisableNavigation = true;
+- IsUIOpen 的 set 访问器：
+  · 自动控制 Screen.CursorVisible 和 CursorLock。
+  · UI 打开时显示并解锁鼠标，关闭时隐藏并锁定。
+- OnUpdate 中实现手柄控制光标：
+  · 读取 Gamepad.LeftStickX / LeftStickY。
+  · 超出 Deadzone 时，计算虚拟坐标并限制在屏幕内。
+  · 直接赋值 Input.MousePosition = _virtualMousePos; 强制移动物理光标。
+  · 没动手柄时，虚拟坐标跟随物理鼠标（支持鼠标、手柄无缝切换）。
+- 模拟点击：
+  · 监听 GamepadButton.A 的按下和抬起。
+  · 调用 RootControl.GameRoot.OnMouseDown / OnMouseUp(Input.MousePosition, MouseButton.Left)。
+  · 利用引擎底层的根节点事件分发，完美触发按钮的 Clicked 回调。
+
+3. GraphicsSettingsPanel.cs
+- 增加统一的显示/隐藏控制函数：
+    private void SetPanelVisible(bool visible)
+    {
+        IsPanelVisible = visible;
+        if (Canvas != null) Canvas.IsActive = IsPanelVisible;
+        UIManager.IsUIOpen = IsPanelVisible; // 通知 UI 管理器
+    }
+- 在 F1 (ToggleActionName) 切换面板时，以及点击 btnClose 时，统一调用此函数。
+
+4. PlayerScript.cs
+- 在 OnUpdate 和 OnFixedUpdate 的开头添加判断：
+    if (UIManager.IsUIOpen) return;
+- 作用：UI 打开时，玩家停止接收鼠标视角旋转、跳跃和射击输入。
+
+5. FreeCamera.cs
+- 在 OnUpdate 和 OnFixedUpdate 的开头添加判断：
+    if (UIManager.IsUIOpen) return;
+- 作用：UI 打开时，自由摄像机停止响应鼠标视角和移动。
 
 
