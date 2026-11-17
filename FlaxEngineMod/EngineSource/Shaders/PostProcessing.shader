@@ -83,7 +83,7 @@ float LensDirtIntensity;
 float4 ScreenFadeColor;
 
 float3 QuantizationError;
-float Dummy2;
+float NitsExposure; // for FakeHDR
 
 float4x4 LensFlareStarMat;
 
@@ -700,16 +700,10 @@ float4 PS_Composite(Quad_VS2PS input) : SV_Target
 	color.rgb *= PostExposure;
 
 
-
-
-
-
 	// Color Grading and Tone Mapping
 #if !NO_GRADING_LUT
 	color.rgb = ColorLookupTable(color.rgb);
 #endif
-
-	
 	
     if (OutputColorSpace == OUTPUT_HDR)
     {
@@ -717,13 +711,12 @@ float4 PS_Composite(Quad_VS2PS input) : SV_Target
     }
     else if (OutputColorSpace == OUTPUT_SRGB)
     {
-		color.rgb = FakeHDR(color.rgb,500);
         color.rgb = LinearToSrgb(color.rgb);
     }
 	else
 	{
 		color.rgb = SoftClip(color.rgb);
-		color.rgb = FakeHDR(color.rgb);
+		color.rgb = FakeHDR(color.rgb,NitsExposure);
 	}
 		
 

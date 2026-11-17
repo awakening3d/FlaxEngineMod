@@ -60,7 +60,7 @@ GPU_CB_STRUCT(Data{
     Color ScreenFadeColor;
 
     Float3 QuantizationError;
-    float Dummy2;
+    float NitsExposure; // for FakeHDR
 
     Matrix LensFlareStarMat;
     });
@@ -377,6 +377,7 @@ void PostProcessingPass::Render(RenderContext& renderContext, GPUTexture* input,
     {
         // Gamma-space colors always present image 'as-is'
         data.OutputColorSpace = OUTPUT_LINEAR;
+        data.NitsExposure = settings.FakeHDRs.NitsExposure; // for FakeHDR
     }
     else
     {

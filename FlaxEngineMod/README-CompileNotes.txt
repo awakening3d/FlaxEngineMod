@@ -1588,4 +1588,21 @@ FlaxUI 鼠标/手柄无缝控制系统
     if (UIManager.IsUIOpen) return;
 - 作用：UI 打开时，自由摄像机停止响应鼠标视角和移动。
 
+================================================================================
+Flax fakehdr sdr 模拟 hdr 画面 功能修改
+日期：2026-11-17
 
+一、 涉及修改文件
+--------------------------------------------------------------------------------------------------------------------------
+1. Source\Engine\Graphics\PostProcessSettings.h
+2. Source\Engine\Renderer\PostProcessingPass.cpp
+3. Source\Shaders\PostProcessing.shader
+4. Source\Shaders\GammaCorrectionCommon.hlsl
+5. Source\Game\GraphicsSettingsPanel.cs
+6. Source\Game\CurveRemap.cs
+7. Source\Game\UIManager.cs
+
+二、改动目标
+---------------------------------------------------------------------------
+1. 在高亮度高色度光照效果上进一步跟 amd 驱动截图效果对齐
+2. 增加 Exposure 参数可以runtime动态调整

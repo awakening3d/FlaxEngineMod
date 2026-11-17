@@ -16,7 +16,7 @@ public class UIManager : Script
         get => _instance != null && _instance._isUIOpen;
         set
         {
-            if (_instance != null && _instance._isUIOpen != value)
+            if (_instance != null) // && _instance._isUIOpen != value)
             {
                 _instance._isUIOpen = value;
                 Screen.CursorVisible = value;
@@ -31,8 +31,9 @@ public class UIManager : Script
 
     public override void OnEnable()
     {
+		_instance = this;
+		IsUIOpen = false;
 		FlaxEngine.GUI.CanvasRootControl.DisableNavigation = true;
-        _instance = this;
     }
 
     public override void OnDisable()
