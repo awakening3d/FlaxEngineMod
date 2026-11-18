@@ -1,0 +1,95 @@
+#include "./Flax/Noise.hlsl"
+ 
+float3 worldpos = Input1;
+float noiseFreq = Input2.x; //1
+float sparkleStrength = Input2.y; //0.2
+float snowmask = Input3.w;
+float hCenter = Input4.x * saturate(snowmask+0.2);
+float3 origNormalTS = Input7;
+
+// distance to camera
+float dist = length(input.WorldPosition - ViewPos.xyz);
+float distFade = 1.0f - saturate(dist / 1200.0f);
+
+float3 finalNormal = origNormalTS;
+
+// ===== New: random micro sparkle based on WorldPos (only on undisturbed snow) =====
+float n1=0, n2=0;
+
+float angle = 0.0;    
+
+if (distFade > 0.001) {
+	
+	const float strength = 0.75f;
+    n1 = DistNoise(dist, worldpos) * strength;
+    // 4. [Decouple] Use pseudo-random hash to completely break correlation between n1 and n2
+    //float hash = frac(sin(n1 * 143.758 + 12.989) * 43758.5453);
+    //angle = hash * 6.2831853;
+    //n2 = hash;
+
+    angle = n1 * 6.2831853;
+    n2 = (cos(angle) + 1.0) * 0.5 * strength;
+}
+
+// Flat snow sparkle mask (hCenter > 0.5)
+float sparkleMask = smoothstep(0.4, 0.5, hCenter);
+
+// Remap to [-1, 1], then sharpen while preserving sign
+float2 sparkleDir = (float2(n1, n2) * 2.0 - 1.0) * 0.2;
+finalNormal.xy += sparkleDir * sparkleStrength * sparkleMask * distFade;
+
+// ===== Add dent bottom bump (hCenter near 0) =====
+// If hCenter < 0.01 -> dentMask = 1.0 (full bump)
+// If hCenter > 0.1 -> dentMask = 0.0 (no bump, original state)
+float dentMask = 1.0 - smoothstep(0.01, 0.1, hCenter);
+// Rotate 90 degrees (swap cos/sin) and subtract 0.5 to center around zero
+float2 dentDir = float2(sin(angle), cos(angle)) * (n1 - 0.5); 
+finalNormal.xy += dentDir * 0.2 * dentMask * distFade; 
+
+// Rebuild Z to keep normal unit-length and pointing outward
+finalNormal.z = sqrt(saturate(1.0 - dot(finalNormal.xy, finalNormal.xy)));
+
+// --- Specular ---
+// 1. Base noise specular
+float baseNoiseSpec = n1 * distFade *0.5;
+
+// 2. Dent bottom specular: only appears where dentMask is strong. 
+// Squaring dentMask makes the falloff sharper, so the specular cuts off immediately when rising out of the dent.
+float dentSpec = baseNoiseSpec * dentMask * dentMask; 
+
+// 3. Flat snow specular: controlled by sparkleMask, keeping the original tanh gradient.
+float flatSpec = baseNoiseSpec * sparkleMask;
+flatSpec = lerp(0.2, flatSpec, fastTanh(hCenter * 4.0));
+
+// 4. Final blend: use dentSpec at the bottom, flatSpec on the flat surface.
+// Saturate to prevent overexposure.
+float specular = saturate(dentSpec + flatSpec);
+
+// 5. Multiply by normal Z to ensure energy conservation.
+specular *= finalNormal.z;
+
+
+// --- Roughness ---
+float depthfactor = saturate(hCenter*2);
+float roughDent = lerp(0.4,0.7, fastTanh(depthfactor*2));
+
+float microVar = 1 - finalNormal.z;
+float roughMicro = roughDent + microVar * 0.12;
+
+float finalRough = saturate(roughMicro);
+
+// --- SSS ---
+float t = hCenter * 2.0 + n1*0.1*distFade;
+t = fastTanh(t);
+float sssFactor = t * 0.2 + 0.8;
+
+distFade = saturate(dist / 30000.0f);
+float noise = frac(sin(dist) * 43758.5453);
+float bright = 0.5 + 0.2 * distFade;
+bright += (noise - 0.5) * 0.005;
+
+
+Output0 = finalNormal.xyzz;
+Output1 = float4(finalRough,0,0,0);
+Output2 = float4(0.96,0.97,0.98,1) * sssFactor * bright;
+Output3 = specular;

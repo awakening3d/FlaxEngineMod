@@ -5,6 +5,7 @@
 
 #include "./Flax/Common.hlsl"
 #include "./Flax/Math.hlsl"
+#include "./Flax/Noise.hlsl"
 #include "./Flax/GammaCorrectionCommon.hlsl"
 
 
@@ -90,7 +91,7 @@ float4 GetExponentialHeightFog(ExponentialHeightFogData exponentialHeightFog, fl
 
     // Compute the final fog color and add the noise perturbation
     float3 fogColor = inscatteringColor * (1.0f - expFogFactor) + directionalInscattering;
-    if (noiseStrength>0) fogColor += DistNoise(rayLength,cameraToPos) * noiseStrength;
+    if (noiseStrength>0) fogColor += (DistNoise(rayLength,cameraToPos)-0.5f) * noiseStrength;
 	//fogColor = noise;
     return float4(fogColor, expFogFactor);	
 }

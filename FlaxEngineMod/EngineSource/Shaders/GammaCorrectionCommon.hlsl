@@ -121,28 +121,6 @@ float3 PQtoNits(float3 pqSignal)
 	return nits;
 }
 
-
-	/*
-    // Dave Hoskins hash (extremely stable on all GPUs)
-    float3 p3 = frac(float3(gridPos.x, gridPos.y, gridPos.x) * 0.1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    float noise = frac((p3.x + p3.y) * p3.z);	
-	*/
-
-float DistNoise(float dist, float3 dir)
-{
-    // Clamp distance to avoid precision loss at extreme distances
-    //dist = min(dist, 400000);
-    
-    // Mix direction into the distance to break the static pattern in the sky
-    // The direction components vary smoothly across the screen, providing spatial variation
-    float mixed = dist + sin( dot(dir, float3(0.01135, 0.02719, 0.01246)));
-    float noise = frac(sin(mixed) * 43758.5453);
-    return (noise - 0.5);
-}
-
-
-
 // Applies a triangular-distribution dither to break up color banding.
 // The noise is scaled to roughly one 8-bit quantization step (1/255).
 float3 ApplyDither(float3 color, float2 screenUV)

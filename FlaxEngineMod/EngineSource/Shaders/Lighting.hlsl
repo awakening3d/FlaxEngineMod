@@ -3,6 +3,7 @@
 #ifndef __LIGHTING__
 #define __LIGHTING__
 
+#include "./Flax/Noise.hlsl"
 #include "./Flax/LightingCommon.hlsl"
 
 ShadowSample GetShadow(LightData lightData, GBufferSample gBuffer, float4 shadowMask)
@@ -144,6 +145,13 @@ float4 GetLighting(float3 viewPos, LightData lightData, GBufferSample gBuffer, f
         L = toLight * rsqrt(distanceSqr);
         float attenuation = 1;
         GetRadialLightAttenuation(lightData, isSpotLight, N, distanceSqr, 1, toLight, L, NoL, attenuation);
+		
+		// add noise to avoid banding artifacts
+		const float noiseStrength = 0.2f;
+		float noise = DistNoise( distanceSqr, toLight);
+		noise = lerp(1.0f - noiseStrength, 1.0f + noiseStrength, noise);
+		attenuation *= noise;
+		
         shadow.SurfaceShadow *= attenuation;
         shadow.TransmissionShadow *= attenuation;
     }
